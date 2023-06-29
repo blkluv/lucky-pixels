@@ -11,7 +11,7 @@ const useWindowDimensions = dynamic(
 );
 
 function PixelContainer({ children }) {
-  const { sideBarState, setSideBarState } = children;
+  const [sideBarState, setSideBarState] = children;
   const { height, width } = useWindowDimensions();
   return (
     <div className="absolute">

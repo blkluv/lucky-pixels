@@ -9,8 +9,8 @@ export default function Home() {
 
   return (
     <main className="bg-black h-screen">
-      <PixelContainer children={{ sideBarState, setSideBarState }} />
-      <MenuSidebar children={{ sideBarState, setSideBarState }} />
+      <PixelContainer children={[sideBarState, setSideBarState]} />
+      <MenuSidebar children={[sideBarState, setSideBarState]} />
     </main>
   );
 }

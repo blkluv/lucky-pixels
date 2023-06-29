@@ -1,5 +1,5 @@
 function Sidebar({ children }) {
-  const { sideBarState, setSideBarState } = children;
+  const [sideBarState, setSideBarState] = children;
   return (
     <div
       className={`absolute drawer ${sideBarState && "drawer-open"}`}
