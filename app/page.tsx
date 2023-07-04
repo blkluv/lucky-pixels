@@ -4,11 +4,15 @@ import PixelContainer from "../components/PixelContainer";
 import MenuSidebar from "../components/MenuSidebar";
 import { useState } from "react";
 
-export default function Home() {
+interface PageProps {
+  children: React.ReactNode;
+}
+
+export default function Home({ children }: PageProps) {
   const [sideBarState, setSideBarState] = useState("");
 
   return (
-    <main className="bg-black h-screen">
+    <main className="h-screen bg-black">
       <PixelContainer>{[sideBarState, setSideBarState]}</PixelContainer>
       <MenuSidebar>{[sideBarState, setSideBarState]}</MenuSidebar>
     </main>

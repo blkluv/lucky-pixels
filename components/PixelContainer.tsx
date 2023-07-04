@@ -3,12 +3,9 @@
 import dynamic from "next/dynamic";
 import React, { Component } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-const useWindowDimensions = dynamic(
-  () => import("../components/useWindowDimensions"),
-  {
-    ssr: false,
-  }
-);
+const useWindowDimensions = dynamic(() => import("./useWindowDimensions"), {
+  ssr: false,
+});
 
 function PixelContainer({ children }) {
   const [sideBarState, setSideBarState] = children;
@@ -19,7 +16,7 @@ function PixelContainer({ children }) {
         {(props) => (
           <React.Fragment>
             <TransformComponent>
-              <div className="h-screen w-screen flex justify-center items-center">
+              <div className="flex h-screen w-screen items-center justify-center">
                 {[...Array(100)].map((a, i) => {
                   return (
                     <div key={i} className="flex-row">
@@ -50,32 +47,3 @@ function PixelContainer({ children }) {
 }
 
 export default PixelContainer;
-
-{
-  /* <Space
-        onCreate={(vp) =>
-          vp.setBounds({
-            x: [0, width],
-            y: [0, height],
-          })
-        }
-      >
-        <div className="h-screen flex justify-center items-center">
-          {[...Array(100)].map((a, i) => {
-            return (
-              <div key={i} className="flex-row">
-                {[...Array(100)].map((b, j) => {
-                  return (
-                    <div
-                      key={j}
-                      className="bg-white opacity-50 hover:opacity-100"
-                      style={{ height: 5, width: 5 }}
-                    ></div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-      </Space> */
-}
