@@ -1,15 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import React, { Component } from "react";
+import React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-const useWindowDimensions = dynamic(() => import("./useWindowDimensions"), {
-  ssr: false,
-});
 
 function PixelContainer({ children }) {
-  const [sideBarState, setSideBarState] = children;
-  const { height, width } = useWindowDimensions();
+  const [blockSidebarState, setBlockSidebarState] = children;
   return (
     <div className="absolute">
       <TransformWrapper maxScale={5} minScale={1}>
@@ -24,13 +19,14 @@ function PixelContainer({ children }) {
                         return (
                           <div
                             key={j}
-                            className={`bg-white opacity-50 hover:opacity-100 ${
-                              sideBarState[0] == j &&
-                              sideBarState[1] == i &&
-                              "opacity-100"
+                            className={`bg-white  hover:opacity-100 ${
+                              blockSidebarState[0] == j &&
+                              blockSidebarState[1] == i
+                                ? "opacity-100"
+                                : "opacity-50"
                             }`}
                             style={{ height: 5, width: 5 }}
-                            onClick={() => setSideBarState([j, i])}
+                            onClick={() => setBlockSidebarState([j, i])}
                           ></div>
                         );
                       })}

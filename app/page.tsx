@@ -1,20 +1,19 @@
 "use client";
 
-import PixelContainer from "../components/PixelContainer";
-import MenuSidebar from "../components/MenuSidebar";
 import { useState } from "react";
+import BlockContainer from "../components/BlockContainer";
+import MenuSidebar from "../components/MenuSidebar";
+import BlockSideBar from "../components/BlockSidebar";
 
-interface PageProps {
-  children: React.ReactNode;
-}
-
-export default function Home({ children }: PageProps) {
-  const [sideBarState, setSideBarState] = useState("");
-
+export default function Home() {
+  const [blockSidebarState, setBlockSidebarState] = useState("");
   return (
     <main className="h-screen bg-black">
-      <PixelContainer>{[sideBarState, setSideBarState]}</PixelContainer>
-      <MenuSidebar>{[sideBarState, setSideBarState]}</MenuSidebar>
+      <BlockContainer>
+        {[blockSidebarState, setBlockSidebarState]}
+      </BlockContainer>
+      <MenuSidebar />
+      <BlockSideBar>{[blockSidebarState, setBlockSidebarState]}</BlockSideBar>
     </main>
   );
 }
