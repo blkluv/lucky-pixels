@@ -9,7 +9,7 @@ interface SupabaseProvidersProps {
   children: React.ReactNode;
 }
 
-function SupabaseProviders({ children }: SupabaseProvidersProps) {
+function SupabaseProvider({ children }: SupabaseProvidersProps) {
   const [supabaseClient] = useState(() =>
     createClientComponentClient<Database>()
   );
@@ -21,4 +21,4 @@ function SupabaseProviders({ children }: SupabaseProvidersProps) {
   );
 }
 
-export default SupabaseProviders;
+export default SupabaseProvider;

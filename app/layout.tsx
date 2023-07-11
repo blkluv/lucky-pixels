@@ -1,6 +1,8 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import SupabaseProviders from "../providers/SupabaseProvider";
+import SupabaseProvider from "../providers/SupabaseProvider";
+import UserProvider from "../providers/UserProvider";
+import ModalProvider from "../providers/ModalProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,11 +15,14 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-function RootLayout({ children }: LayoutProps) {
+async function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SupabaseProviders>{children}</SupabaseProviders>
+        <SupabaseProvider>
+          {/* <ModalProvider /> */}
+          <UserProvider>{children}</UserProvider>
+        </SupabaseProvider>
       </body>
     </html>
   );
