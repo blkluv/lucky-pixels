@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   useSessionContext,
   useSupabaseClient,
@@ -18,7 +18,7 @@ function GoogleModal() {
   const player = usePlayer();
   const { session } = useSessionContext();
   const router = useRouter();
-  const { onClose, isOpen } = useAuthModal();
+  const { onClose } = useAuthModal();
   const supabaseClient = useSupabaseClient();
   const { user } = useUser();
 
@@ -26,15 +26,9 @@ function GoogleModal() {
     if (session) {
       toast.success("Logged in");
       router.refresh();
-      onClose();
+      // onClose();
     }
   }, [session, router, onClose]);
-
-  const onChange = (open: boolean) => {
-    if (!open) {
-      onClose();
-    }
-  };
 
   const handleLogout = async () => {
     const { error } = await supabaseClient.auth.signOut();
@@ -66,7 +60,7 @@ function GoogleModal() {
           <Auth
             supabaseClient={supabaseClient}
             providers={["google"]}
-            magicLink={true}
+            // magicLink={true}
             appearance={{
               theme: ThemeSupa,
             }}
