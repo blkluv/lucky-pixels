@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import SupabaseProvider from "../providers/SupabaseProvider";
 import UserProvider from "../providers/UserProvider";
 import ModalProvider from "../providers/ModalProvider";
+import ToasterProvider from "../providers/ToastProviders";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ async function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <ToasterProvider />
         <SupabaseProvider>
           {/* <ModalProvider /> */}
           <UserProvider>{children}</UserProvider>
