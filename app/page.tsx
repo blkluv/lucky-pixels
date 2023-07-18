@@ -7,7 +7,10 @@ import BlockSideBar from "../components/BlockSidebar";
 import GoogleModal from "../components/GoogleModal";
 
 export default function Home() {
-  const [blockSidebarState, setBlockSidebarState] = useState("");
+  const [blockSidebarState, setBlockSidebarState] = useState([
+    { x: "", y: "" },
+  ]);
+
   return (
     <main className="h-screen bg-black">
       <BlockContainer>

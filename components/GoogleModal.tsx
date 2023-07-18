@@ -13,11 +13,11 @@ import { useUser } from "../hooks/useUser";
 import usePlayer from "../hooks/usePlayer";
 import { toast } from "react-hot-toast";
 
-import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+// import { createClient } from "@supabase/supabase-js";
+// const supabase = createClient(
+//   process.env.NEXT_PUBLIC_SUPABASE_URL,
+//   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// );
 
 function GoogleModal() {
   const { session } = useSessionContext();
@@ -28,11 +28,8 @@ function GoogleModal() {
   const router = useRouter();
   const supabaseClient = useSupabaseClient();
 
-  console.log(user);
-
   useEffect(() => {
     if (session) {
-      console.log(session.expires_in);
       session.expires_in == 3600 && toast.success("Logged in");
     }
   }, [session, router, onClose]);
@@ -57,7 +54,7 @@ function GoogleModal() {
           } else handleLogout();
         }}
       >
-        {user ? "Logout" : "Google login"}
+        {user ? "Logout" : "Login"}
       </button>
       <dialog id="my_modal_1" className="modal">
         <form method="dialog" className="modal-box">

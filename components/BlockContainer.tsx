@@ -5,10 +5,11 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 function PixelContainer({ children }) {
   const [blockSidebarState, setBlockSidebarState] = children;
+
   return (
     <div className="absolute">
       <TransformWrapper maxScale={5} minScale={1}>
-        {(props) => (
+        {() => (
           <React.Fragment>
             <TransformComponent>
               <div className="flex h-screen w-screen items-center justify-center">
@@ -20,13 +21,15 @@ function PixelContainer({ children }) {
                           <div
                             key={j}
                             className={`bg-white  hover:opacity-100 ${
-                              blockSidebarState[0] == j &&
-                              blockSidebarState[1] == i
+                              blockSidebarState[0]?.x == j &&
+                              blockSidebarState[0]?.y == i
                                 ? "opacity-100"
                                 : "opacity-50"
                             }`}
                             style={{ height: 5, width: 5 }}
-                            onClick={() => setBlockSidebarState([j, i])}
+                            onClick={() =>
+                              setBlockSidebarState([{ x: j, y: i }])
+                            }
                           ></div>
                         );
                       })}

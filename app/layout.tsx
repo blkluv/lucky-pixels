@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Lucky pixel",
-  description: "Get a piece of web",
+  description: "Get a piece of the internet",
 };
 
 interface LayoutProps {
