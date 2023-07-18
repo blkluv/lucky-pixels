@@ -6,7 +6,6 @@ import {
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-
 import { useRouter } from "next/navigation";
 import { Auth } from "@supabase/auth-ui-react";
 import useAuthModal from "../hooks/useAuthModal";
@@ -14,30 +13,36 @@ import { useUser } from "../hooks/useUser";
 import usePlayer from "../hooks/usePlayer";
 import { toast } from "react-hot-toast";
 
+import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
+
 function GoogleModal() {
-  const player = usePlayer();
   const { session } = useSessionContext();
-  const router = useRouter();
-  const { onClose } = useAuthModal();
-  const supabaseClient = useSupabaseClient();
   const { user } = useUser();
+  const { onClose } = useAuthModal();
+
+  const player = usePlayer();
+  const router = useRouter();
+  const supabaseClient = useSupabaseClient();
+
+  console.log(user);
 
   useEffect(() => {
     if (session) {
-      toast.success("Logged in");
-      router.refresh();
-      // onClose();
+      console.log(session.expires_in);
+      session.expires_in == 3600 && toast.success("Logged in");
     }
   }, [session, router, onClose]);
 
   const handleLogout = async () => {
     const { error } = await supabaseClient.auth.signOut();
     player.reset();
-    router.refresh();
 
-    if (error) {
-      toast.error(error.message);
-    } else toast.success("Logged out");
+    if (error) toast.error(error.message);
+    else toast.success("Logged out");
   };
 
   return (
@@ -59,8 +64,9 @@ function GoogleModal() {
           <h3 className="text-lg font-bold">Hello!</h3>
           <Auth
             supabaseClient={supabaseClient}
+            // supabaseClient={supabase}
+            onlyThirdPartyProviders={true}
             providers={["google"]}
-            // magicLink={true}
             appearance={{
               theme: ThemeSupa,
             }}
