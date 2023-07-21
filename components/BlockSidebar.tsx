@@ -14,7 +14,7 @@ function BlockSideBar({ children }) {
         blockSidebarState[0]?.x && blockSidebarState[0]?.y && "drawer-open"
       }`}
       onClick={() => {
-        setBlockSidebarState([{ x: "", y: "" }]), setInfoState(true);
+        setBlockSidebarState([{ x: 0, y: 0 }]), setInfoState(true);
       }}
     >
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />

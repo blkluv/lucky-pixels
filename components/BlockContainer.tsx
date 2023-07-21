@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import BlockSideBar from "../components/BlockSidebar";
 import MenuSidebar from "../components/MenuSidebar";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -8,22 +8,22 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 function PixelContainer({ children }) {
   const [blocks] = children;
   const [blockSidebarState, setBlockSidebarState] = useState([{ x: 0, y: 0 }]);
-  let lastBlockState;
-  console.log(blocks);
+  const lastBlockState = useRef([]);
+  // console.log(blocks);
+
+  console.log(blockSidebarState);
 
   useEffect(() => {
     if (blockSidebarState[0].x !== 0 && blockSidebarState[0].y !== 0) {
-      // console.log("blockSidebarState", blockSidebarState);
       blockSidebarState.map((block) => {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
         if (element) element.style.opacity = "1";
       });
-      lastBlockState = blockSidebarState;
+      lastBlockState.current = blockSidebarState;
     } else {
-      // console.log("lastBlockState", lastBlockState);
-      lastBlockState?.map((block) => {
+      lastBlockState.current?.map((block) => {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
@@ -46,20 +46,12 @@ function PixelContainer({ children }) {
                         {[...Array(100)].map((y, j) => {
                           return (
                             <div
-                              id={"block " + i + ", " + j}
+                              id={"block " + (i + 1) + ", " + (j + 1)}
                               key={j}
                               className={`bg-white opacity-50 hover:opacity-100`}
-                              // className={`bg-white  hover:opacity-100
-                              // ${
-                              //   blockSidebarState[0]?.x === j &&
-                              //   blockSidebarState[0]?.y === i
-                              //     ? "opacity-100"
-                              //     : "opacity-50"
-                              // }
-                              // `}
                               style={{ height: 5, width: 5 }}
                               onClick={() =>
-                                setBlockSidebarState([{ x: j, y: i }])
+                                setBlockSidebarState([{ x: j + 1, y: i + 1 }])
                               }
                             />
                           );
