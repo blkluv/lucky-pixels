@@ -8,6 +8,7 @@ body :root {
   /* background-color: black; */
   /* color-scheme: dark; */
   color: "white";
+  overflow: hidden;
 }
 
 /* body::-webkit-scrollbar {

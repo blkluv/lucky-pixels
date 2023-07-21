@@ -1,64 +1,82 @@
-// "use client";
+"use client";
 
-// import React, { useEffect } from "react";
-// import { Auth } from "@supabase/auth-ui-react";
-// import { ThemeSupa } from "@supabase/auth-ui-shared";
-// import {
-//   useSessionContext,
-//   useSupabaseClient,
-// } from "@supabase/auth-helpers-react";
-// import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import {
+  useSessionContext,
+  useSupabaseClient,
+} from "@supabase/auth-helpers-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { useRouter } from "next/navigation";
+import { Auth } from "@supabase/auth-ui-react";
+import { useUser } from "../hooks/useUser";
+import usePlayer from "../hooks/usePlayer";
+import { toast } from "react-hot-toast";
 
-// import useAuthModal from "../hooks/useAuthModal";
+function AuthModal() {
+  const { session } = useSessionContext();
+  const { user } = useUser();
 
-// import Modal from "./Modal";
+  const player = usePlayer();
+  const router = useRouter();
+  const supabaseClient = useSupabaseClient();
 
-// const AuthModal = () => {
-//   const { session } = useSessionContext();
-//   const router = useRouter();
-//   const { onClose, isOpen } = useAuthModal();
+  const [isMounted, setIsMounted] = useState(false);
 
-//   const supabaseClient = useSupabaseClient();
+  const handleLogout = async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    player.reset();
 
-//   useEffect(() => {
-//     if (session) {
-//       router.refresh();
-//       onClose();
-//     }
-//   }, [session, router, onClose]);
+    if (error) toast.error(error.message);
+    else toast.success("Logged out");
+  };
 
-//   const onChange = (open: boolean) => {
-//     if (!open) {
-//       onClose();
-//     }
-//   };
+  useEffect(() => {
+    if (session) {
+      (document.getElementById("my_modal_1") as HTMLFormElement).close();
+      session.expires_in == 3600 && toast.success("Logged in");
+    }
+  }, [session, router]);
 
-//   return (
-//     <Modal
-//       title="Welcome back"
-//       description="Login to your account."
-//       isOpen={isOpen}
-//       onChange={onChange}
-//     >
-//       <Auth
-//         supabaseClient={supabaseClient}
-//         providers={["google"]}
-//         magicLink={true}
-//         appearance={{
-//           theme: ThemeSupa,
-//           variables: {
-//             default: {
-//               colors: {
-//                 brand: "#404040",
-//                 brandAccent: "#22c55e",
-//               },
-//             },
-//           },
-//         }}
-//         theme="dark"
-//       />
-//     </Modal>
-//   );
-// };
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-// export default AuthModal;
+  if (!isMounted) {
+    return null;
+  } else
+    return (
+      <>
+        <button
+          className="btn absolute bottom-5 start-5 z-0"
+          onClick={() => {
+            if (document && !user) {
+              (
+                document.getElementById("my_modal_1") as HTMLFormElement
+              ).showModal();
+            } else handleLogout();
+          }}
+        >
+          {user ? "Logout" : "Login"}
+        </button>
+        <dialog id="my_modal_1" className="modal">
+          <div className="modal-box">
+            <h3 className="text-lg font-bold">Hello!</h3>
+            <Auth
+              supabaseClient={supabaseClient}
+              // supabaseClient={supabase}
+              // onlyThirdPartyProviders={true}
+              providers={["google"]}
+              appearance={{
+                theme: ThemeSupa,
+              }}
+            />
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
+      </>
+    );
+}
+
+export default AuthModal;

@@ -2,8 +2,8 @@ import Stripe from "stripe";
 
 export interface Block {
   id: string;
-  owner_id: string;
   block_type: string;
+  owner_id: string;
   image_id: string;
 }
 

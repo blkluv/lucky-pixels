@@ -1,3 +1,5 @@
+"use client";
+
 import BlockInfo from "./BlockInfo";
 import BlockBuy from "./BlockBuy";
 import { useState } from "react";
@@ -8,8 +10,8 @@ function BlockSideBar({ children }) {
 
   return (
     <div
-      className={`drawer z-10 ${
-        blockSidebarState[0].x && blockSidebarState[0].y && "drawer-open"
+      className={`drawer ${
+        blockSidebarState[0]?.x && blockSidebarState[0]?.y && "drawer-open"
       }`}
       onClick={() => {
         setBlockSidebarState([{ x: "", y: "" }]), setInfoState(true);

@@ -4,19 +4,30 @@ function BlockBuy({ children }) {
   const [blockSidebarState, setBlockSidebarState, setInfoState] = children;
   const [buyXAmount, setBuyXAmount] = useState(1);
   const [buyYAmount, setBuyYAmount] = useState(1);
+  let blockArray = [];
 
-  function handleChange(values) {
-    // setBuyAmount([parseInt(values[0]), parseInt(values[1])]);
-    // blockSidebarState[0].x * 100 + blockSidebarState[0].y + 1
-    // setBlockSidebarState
-  }
+  useEffect(() => {
+    if (buyXAmount != 1 || buyYAmount != 1) {
+      for (let i = 0; i < buyXAmount; i++) {
+        blockArray.push(
+          ...[...Array(buyYAmount)].map((y, j) => {
+            return {
+              x: blockSidebarState[0].x + i,
+              y: blockSidebarState[0].y + j,
+            };
+          })
+        );
+      }
+      setBlockSidebarState(blockArray);
+    }
+  }, [buyXAmount, buyYAmount]);
 
   return (
     <div className="flex flex-col items-center py-3">
       <h2 className="card-title">
         Pixel#
         {blockSidebarState
-          ? blockSidebarState[0].x * 100 + blockSidebarState[0].y + 1
+          ? blockSidebarState[0]?.x * 100 + blockSidebarState[0]?.y + 1
           : "00000"}
         <div className="badge badge-secondary">AVAILABLE</div>
       </h2>
@@ -37,7 +48,7 @@ function BlockBuy({ children }) {
         />
       </div>
       <div>
-        Block width:{" "}
+        Block height:{" "}
         <input
           type="number"
           min={1}

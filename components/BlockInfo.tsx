@@ -12,8 +12,8 @@ function BlockInfo({ children }) {
         <figure>
           <Image
             src="/favicon.ico"
-            width={400}
-            height={400}
+            width={320}
+            height={320}
             alt="Pixel picture"
           />
         </figure>

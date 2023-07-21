@@ -1,3 +1,5 @@
+"use client";
+
 function MenuSidebar() {
   return (
     <div className={`drawer absolute`}>
