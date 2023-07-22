@@ -21,7 +21,7 @@ function BlockInfo({ children }) {
           <h2 className="card-title">
             Pixel#
             {blockSidebarState
-              ? blockSidebarState[0].x * 100 + blockSidebarState[0].y + 1
+              ? (blockSidebarState[0].x - 1) * 100 + blockSidebarState[0].y
               : "00000"}
             <div className="badge badge-secondary">AVAILABLE</div>
           </h2>

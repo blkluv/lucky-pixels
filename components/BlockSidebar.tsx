@@ -17,13 +17,13 @@ function BlockSideBar({ children }) {
         setBlockSidebarState([{ x: 0, y: 0 }]), setInfoState(true);
       }}
     >
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+      <input id="blockinfo-drawer" type="checkbox" className="drawer-toggle" />
       <div
         className="drawer-open drawer-side z-10"
         id="sidebar"
         onClick={(e) => e.stopPropagation()}
       >
-        <label htmlFor="my-drawer" className="drawer-overlay"></label>
+        <label htmlFor="blockinfo-drawer" className="drawer-overlay"></label>
         <ul className="menu h-full w-80 items-center bg-base-200 p-0">
           {infoState ? (
             <BlockInfo>{[blockSidebarState, setInfoState]}</BlockInfo>

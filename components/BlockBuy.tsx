@@ -12,8 +12,8 @@ function BlockBuy({ children }) {
         blockArray.push(
           ...[...Array(buyYAmount)].map((y, j) => {
             return {
-              x: blockSidebarState[0].x + i,
-              y: blockSidebarState[0].y + j,
+              x: blockSidebarState[0].x + j,
+              y: blockSidebarState[0].y + i,
             };
           })
         );
@@ -27,7 +27,7 @@ function BlockBuy({ children }) {
       <h2 className="card-title">
         Pixel#
         {blockSidebarState
-          ? blockSidebarState[0]?.x * 100 + blockSidebarState[0]?.y + 1
+          ? (blockSidebarState[0].x - 1) * 100 + blockSidebarState[0].y
           : "00000"}
         <div className="badge badge-secondary">AVAILABLE</div>
       </h2>

@@ -10,7 +10,6 @@ const getBlocks = async (): Promise<Block[]> => {
   });
 
   const { data, error } = await supabase.from("blocks").select("*").limit(10);
-  console.log(data);
 
   if (error) {
     console.log(error.message);
