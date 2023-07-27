@@ -31,7 +31,7 @@ function BlockInfo({ children }) {
       </div>
       <button
         className="btn-neutral btn w-fit p-3 px-10"
-        onClick={() => showModal()}
+        onClick={() => (user ? setInfoState(false) : showModal())}
       >
         {user ? "BUY" : "Please login to buy"}
       </button>
