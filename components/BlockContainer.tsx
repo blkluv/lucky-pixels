@@ -9,6 +9,7 @@ function PixelContainer({ children }) {
   const [blocks] = children;
   const [blockSidebarState, setBlockSidebarState] = useState([{ x: 0, y: 0 }]);
   const lastBlockState = useRef([]);
+  console.log(blocks);
 
   useEffect(() => {
     if (blockSidebarState[0].x !== 0 && blockSidebarState[0].y !== 0) {

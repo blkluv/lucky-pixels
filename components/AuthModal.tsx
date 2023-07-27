@@ -12,6 +12,11 @@ import { useUser } from "../hooks/useUser";
 import usePlayer from "../hooks/usePlayer";
 import { toast } from "react-hot-toast";
 
+export const closeModal = () =>
+  (document.getElementById("auth_modal") as HTMLFormElement)?.close();
+export const showModal = () =>
+  (document.getElementById("auth_modal") as HTMLFormElement)?.showModal();
+
 function AuthModal() {
   const { session } = useSessionContext();
   const { user } = useUser();
@@ -32,7 +37,7 @@ function AuthModal() {
 
   useEffect(() => {
     if (session) {
-      (document.getElementById("auth_modal") as HTMLFormElement).close();
+      closeModal();
       session.expires_in == 3600 && toast.success("Logged in");
     }
   }, [session, router]);
@@ -49,10 +54,8 @@ function AuthModal() {
         <button
           className="btn absolute bottom-5 start-5 z-0"
           onClick={() => {
-            if (document && !user) {
-              (
-                document.getElementById("auth_modal") as HTMLFormElement
-              ).showModal();
+            if (!user) {
+              showModal();
             } else handleLogout();
           }}
         >

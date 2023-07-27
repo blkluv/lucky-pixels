@@ -1,18 +1,17 @@
 import BlockContainer from "../components/BlockContainer";
 import AuthModal from "../components/AuthModal";
 import getBlocks from "../actions/getBlocks";
-
-// const React  = dynamic(() => import("react"));
+import getActiveProductsWithPrices from "../actions/getActiveProductsWithPrices";
 
 export const revalidate = 0;
 
 export default async function Home() {
   const blocks = await getBlocks();
-  console.log(blocks);
+  const products = await getActiveProductsWithPrices;
 
   return (
     <main className="h-screen bg-black">
-      <BlockContainer>{blocks}</BlockContainer>
+      <BlockContainer>{[blocks]}</BlockContainer>
       <AuthModal />
     </main>
   );

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { AiFillFacebook, AiOutlineTwitter } from "react-icons/ai";
 import { useUser } from "../hooks/useUser";
+import { showModal } from "./AuthModal";
 
 function BlockInfo({ children }) {
   const { user } = useUser();
@@ -30,13 +31,7 @@ function BlockInfo({ children }) {
       </div>
       <button
         className="btn-neutral btn w-fit p-3 px-10"
-        onClick={() =>
-          user
-            ? setInfoState(false)
-            : (
-                document.getElementById("auth_modal") as HTMLFormElement
-              ).showModal()
-        }
+        onClick={() => showModal()}
       >
         {user ? "BUY" : "Please login to buy"}
       </button>
