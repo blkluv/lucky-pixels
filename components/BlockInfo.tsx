@@ -30,7 +30,13 @@ function BlockInfo({ children }) {
       </div>
       <button
         className="btn-neutral btn w-fit p-3 px-10"
-        onClick={() => user && setInfoState(false)}
+        onClick={() =>
+          user
+            ? setInfoState(false)
+            : (
+                document.getElementById("auth_modal") as HTMLFormElement
+              ).showModal()
+        }
       >
         {user ? "BUY" : "Please login to buy"}
       </button>

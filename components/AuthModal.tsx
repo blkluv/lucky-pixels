@@ -32,7 +32,7 @@ function AuthModal() {
 
   useEffect(() => {
     if (session) {
-      (document.getElementById("my_modal_1") as HTMLFormElement).close();
+      (document.getElementById("auth_modal") as HTMLFormElement).close();
       session.expires_in == 3600 && toast.success("Logged in");
     }
   }, [session, router]);
@@ -51,14 +51,14 @@ function AuthModal() {
           onClick={() => {
             if (document && !user) {
               (
-                document.getElementById("my_modal_1") as HTMLFormElement
+                document.getElementById("auth_modal") as HTMLFormElement
               ).showModal();
             } else handleLogout();
           }}
         >
           {user ? "Logout" : "Login"}
         </button>
-        <dialog id="my_modal_1" className="modal">
+        <dialog id="auth_modal" className="modal">
           <div className="modal-box">
             <h3 className="text-lg font-bold">Hello!</h3>
             <Auth

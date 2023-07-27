@@ -6,6 +6,13 @@ function BlockBuy({ children }) {
   const [buyYAmount, setBuyYAmount] = useState(1);
   let blockArray = [];
 
+  function changeAmount(direction, amount) {
+    if (amount > 0 && amount <= 100) {
+      direction === "x" && setBuyXAmount(amount);
+      direction === "y" && setBuyYAmount(amount);
+    }
+  }
+
   useEffect(() => {
     if (buyXAmount != 1 || buyYAmount != 1) {
       for (let i = 0; i < buyXAmount; i++) {
@@ -44,7 +51,7 @@ function BlockBuy({ children }) {
           min={1}
           max={100}
           value={buyXAmount}
-          onChange={(e) => setBuyXAmount(parseInt(e.target.value))}
+          onChange={(e) => changeAmount("x", parseInt(e.target.value))}
         />
       </div>
       <div>
@@ -54,7 +61,7 @@ function BlockBuy({ children }) {
           min={1}
           max={100}
           value={buyYAmount}
-          onChange={(e) => setBuyYAmount(parseInt(e.target.value))}
+          onChange={(e) => changeAmount("y", parseInt(e.target.value))}
         />
       </div>
     </div>

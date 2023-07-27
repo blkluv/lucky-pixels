@@ -9,15 +9,20 @@ function PixelContainer({ children }) {
   const [blocks] = children;
   const [blockSidebarState, setBlockSidebarState] = useState([{ x: 0, y: 0 }]);
   const lastBlockState = useRef([]);
-  console.log(blocks);
 
   useEffect(() => {
     if (blockSidebarState[0].x !== 0 && blockSidebarState[0].y !== 0) {
+      lastBlockState.current?.map((block) => {
+        var element = document.getElementById(
+          "block " + block.y + ", " + block.x
+        );
+        if (element) element.classList.remove("opacity-100");
+      });
       blockSidebarState.map((block) => {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
-        if (element) element.style.opacity = "1";
+        if (element) element.classList.add("opacity-100");
       });
       lastBlockState.current = blockSidebarState;
     } else {
@@ -25,7 +30,7 @@ function PixelContainer({ children }) {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
-        if (element) element.style.opacity = "0.5";
+        if (element) element.classList.remove("opacity-100");
       });
     }
   }, [blockSidebarState]);
@@ -47,10 +52,12 @@ function PixelContainer({ children }) {
                               id={"block " + (i + 1) + ", " + (j + 1)}
                               key={j}
                               className={`bg-white opacity-50 hover:opacity-100`}
+                              // onMouseOver={(e) => highlightBlock(e)}
                               style={{ height: 5, width: 5 }}
                               onClick={() =>
                                 setBlockSidebarState([{ x: j + 1, y: i + 1 }])
                               }
+                              // onClick={() => highlightBlock(i + 1, j + 1)}
                             />
                           );
                         })}
