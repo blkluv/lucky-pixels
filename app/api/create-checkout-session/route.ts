@@ -7,7 +7,7 @@ import { getURL } from "../../../libs/helpers";
 import { createOrRetrieveCustomer } from "../../../libs/supabaseAdmin";
 
 export async function POST(request: Request) {
-  const { price, quantity = 1, metadata = {} } = await request.json();
+  const { price, quantity, metadata = {} } = await request.json();
 
   try {
     const supabase = createRouteHandlerClient({
@@ -34,8 +34,8 @@ export async function POST(request: Request) {
       ],
       mode: "payment",
       allow_promotion_codes: true,
-      success_url: `${getURL()}/?success`,
-      cancel_url: `${getURL()}/?cancel`,
+      success_url: `${getURL()}/?checkout=success`,
+      cancel_url: `${getURL()}/?checkout=cancel`,
     });
     return NextResponse.json({ sessionId: session.id });
   } catch (err: any) {

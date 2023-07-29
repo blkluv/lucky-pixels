@@ -1,14 +1,17 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { toast } from "react-hot-toast";
 import BlockSideBar from "../components/BlockSidebar";
 import MenuSidebar from "../components/MenuSidebar";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 function PixelContainer({ children }) {
-  const [blocks] = children;
+  const [blocks, products] = children;
   const [blockSidebarState, setBlockSidebarState] = useState([{ x: 0, y: 0 }]);
   const lastBlockState = useRef([]);
+  const search = useSearchParams();
 
   useEffect(() => {
     if (blockSidebarState[0].x !== 0 && blockSidebarState[0].y !== 0) {
@@ -43,6 +46,14 @@ function PixelContainer({ children }) {
       });
     }
   }, [blockSidebarState]);
+
+  useEffect(() => {
+    const checkoutState = search.get("checkout");
+    if (checkoutState) {
+      checkoutState === "success" && toast.success("Success");
+      checkoutState === "cancel" && toast.error("Cancelled");
+    }
+  }, []);
 
   return (
     <>
@@ -79,7 +90,9 @@ function PixelContainer({ children }) {
           )}
         </TransformWrapper>
       </div>
-      <BlockSideBar>{[blockSidebarState, setBlockSidebarState]}</BlockSideBar>
+      <BlockSideBar>
+        {[blockSidebarState, setBlockSidebarState, products]}
+      </BlockSideBar>
       <MenuSidebar />
     </>
   );

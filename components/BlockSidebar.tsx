@@ -5,7 +5,7 @@ import BlockBuy from "./BlockBuy";
 import { useState } from "react";
 
 function BlockSideBar({ children }) {
-  const [blockSidebarState, setBlockSidebarState] = children;
+  const [blockSidebarState, setBlockSidebarState, products] = children;
   const [infoState, setInfoState] = useState(true);
 
   return (
@@ -29,7 +29,12 @@ function BlockSideBar({ children }) {
             <BlockInfo>{[blockSidebarState, setInfoState]}</BlockInfo>
           ) : (
             <BlockBuy>
-              {[blockSidebarState, setBlockSidebarState, setInfoState]}
+              {[
+                blockSidebarState,
+                setBlockSidebarState,
+                setInfoState,
+                products,
+              ]}
             </BlockBuy>
           )}
         </ul>

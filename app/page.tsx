@@ -7,11 +7,11 @@ export const revalidate = 0;
 
 export default async function Home() {
   const blocks = await getBlocks();
-  // const products = await getActiveProductsWithPrices;
+  const products = await getActiveProductsWithPrices();
 
   return (
     <main className="h-screen bg-black">
-      <BlockContainer>{[blocks]}</BlockContainer>
+      <BlockContainer>{[blocks, products]}</BlockContainer>
       <AuthModal />
     </main>
   );
