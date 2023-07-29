@@ -7,9 +7,13 @@ function BlockBuy({ children }) {
   let blockArray = [];
 
   function changeAmount(direction, amount) {
-    if (amount > 0 && amount <= 100) {
-      direction === "x" && setBuyXAmount(amount);
-      direction === "y" && setBuyYAmount(amount);
+    if (amount > 0) {
+      direction === "x" &&
+        blockSidebarState[0].y + amount - 1 <= 100 &&
+        setBuyXAmount(amount);
+      direction === "y" &&
+        blockSidebarState[0].x + amount - 1 <= 100 &&
+        setBuyYAmount(amount);
     }
   }
 
@@ -40,11 +44,11 @@ function BlockBuy({ children }) {
       </h2>
       <button
         onClick={() => setInfoState(true)}
-        className="btn-ghost btn-xs mb-10 w-fit"
+        className="btn-ghost btn-xs my-3 mb-10 w-fit underline"
       >
         Go to block
       </button>
-      <div>
+      <div className="flex w-full justify-between p-3 text-lg">
         Block width:{" "}
         <input
           type="number"
@@ -54,7 +58,7 @@ function BlockBuy({ children }) {
           onChange={(e) => changeAmount("x", parseInt(e.target.value))}
         />
       </div>
-      <div>
+      <div className="flex w-full justify-between p-3 text-lg">
         Block height:{" "}
         <input
           type="number"

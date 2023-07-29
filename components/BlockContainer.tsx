@@ -9,7 +9,6 @@ function PixelContainer({ children }) {
   const [blocks] = children;
   const [blockSidebarState, setBlockSidebarState] = useState([{ x: 0, y: 0 }]);
   const lastBlockState = useRef([]);
-  console.log(blocks);
 
   useEffect(() => {
     if (blockSidebarState[0].x !== 0 && blockSidebarState[0].y !== 0) {
@@ -17,13 +16,19 @@ function PixelContainer({ children }) {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
-        if (element) element.classList.remove("opacity-100");
+        if (element) {
+          element.classList.add("opacity-50");
+          element.classList.remove("opacity-100");
+        }
       });
       blockSidebarState.map((block) => {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
-        if (element) element.classList.add("opacity-100");
+        if (element) {
+          element.classList.remove("opacity-50");
+          element.classList.add("opacity-100");
+        }
       });
       lastBlockState.current = blockSidebarState;
     } else {
@@ -31,7 +36,10 @@ function PixelContainer({ children }) {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
-        if (element) element.classList.remove("opacity-100");
+        if (element) {
+          element.classList.add("opacity-50");
+          element.classList.remove("opacity-100");
+        }
       });
     }
   }, [blockSidebarState]);

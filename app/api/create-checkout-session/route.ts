@@ -32,16 +32,11 @@ export async function POST(request: Request) {
           quantity,
         },
       ],
-      mode: "subscription",
+      mode: "payment",
       allow_promotion_codes: true,
-      subscription_data: {
-        trial_from_plan: true,
-        metadata,
-      },
-      success_url: `${getURL()}/account`,
-      cancel_url: `${getURL()}/`,
+      success_url: `${getURL()}/?success`,
+      cancel_url: `${getURL()}/?cancel`,
     });
-
     return NextResponse.json({ sessionId: session.id });
   } catch (err: any) {
     console.log(err);
