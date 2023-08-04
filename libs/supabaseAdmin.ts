@@ -115,24 +115,24 @@ const manageCheckoutSessionStatusChange = async (
     checkoutSessionId
   );
 
-  const checkoutSessionData: Database["public"]["Tables"]["payments"]["Insert"] =
-    {
-      id: checkoutSession.payment_intent,
-      status: checkoutSession.status,
-      created: toDateTime(checkoutSession.created).toISOString(),
-      user_id: uuid,
-      metadata: checkoutSession.metadata,
-      customer_details: checkoutSession.customer_details,
-      amount: checkoutSession.amount_total,
-    };
+  // const checkoutSessionData: Database["public"]["Tables"]["payments"]["Insert"] =
+  //   {
+  //     id: checkoutSession.payment_intent,
+  //     status: checkoutSession.status,
+  //     created: toDateTime(checkoutSession.created).toISOString(),
+  //     user_id: uuid,
+  //     metadata: checkoutSession.metadata,
+  //     customer_details: checkoutSession.customer_details,
+  //     amount: checkoutSession.amount_total,
+  //   };
 
-  const { error } = await supabaseAdmin
-    .from("payments")
-    .upsert([checkoutSessionData]);
-  if (error) throw error;
-  console.log(
-    `Inserted/updated checkoutSession [${checkoutSession.id}] for user [${uuid}]`
-  );
+  // const { error } = await supabaseAdmin
+  //   .from("payments")
+  //   .upsert([checkoutSessionData]);
+  // if (error) throw error;
+  // console.log(
+  //   `Inserted/updated checkoutSession [${checkoutSession.id}] for user [${uuid}]`
+  // );
   // if (createAction && checkoutSession.default_payment_method && uuid)
   //   //@ts-ignore
   //   await copyBillingDetailsToCustomer(
@@ -157,19 +157,19 @@ const managePaymentStatusChange = async (
 
   const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-  const paymentIntentData: Database["public"]["Tables"]["payments"]["Insert"] =
-    {
-      id: paymentIntent.id,
-      status: paymentIntent.status,
-    };
+  // const paymentIntentData: Database["public"]["Tables"]["payments"]["Insert"] =
+  //   {
+  //     id: paymentIntent.id,
+  //     status: paymentIntent.status,
+  //   };
 
-  const { error } = await supabaseAdmin
-    .from("subscriptions")
-    .upsert([paymentIntentData]);
-  if (error) throw error;
-  console.log(
-    `Inserted/updated paymentIntent [${paymentIntent.id}] for user [${uuid}]`
-  );
+  // const { error } = await supabaseAdmin
+  //   .from("subscriptions")
+  //   .upsert([paymentIntentData]);
+  // if (error) throw error;
+  // console.log(
+  //   `Inserted/updated paymentIntent [${paymentIntent.id}] for user [${uuid}]`
+  // );
 
   // For a new subscription copy the billing details to the customer object.
   // NOTE: This is a costly operation and should happen at the very end.

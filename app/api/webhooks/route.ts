@@ -50,19 +50,19 @@ export async function POST(request: Request) {
         case "payment_intent.created":
         case "payment_intent.succeeded":
           const paymentIntent = event.data.object as Stripe.PaymentIntent;
-          await managePaymentStatusChange(
-            paymentIntent.id,
-            paymentIntent.customer as string,
-            true
-          );
+          // await managePaymentStatusChange(
+          //   paymentIntent.id,
+          //   paymentIntent.customer as string,
+          //   true
+          // );
           break;
         case "checkout.session.completed":
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          await manageCheckoutSessionStatusChange(
-            checkoutSession.id,
-            checkoutSession.customer as string,
-            true
-          );
+          // await manageCheckoutSessionStatusChange(
+          //   checkoutSession.id,
+          //   checkoutSession.customer as string,
+          //   true
+          // );
           break;
         default:
           throw new Error("Unhandled relevant event!");
