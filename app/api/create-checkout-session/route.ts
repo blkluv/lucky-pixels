@@ -7,7 +7,7 @@ import { getURL } from "../../../libs/helpers";
 import { createOrRetrieveCustomer } from "../../../libs/supabaseAdmin";
 
 export async function POST(request: Request) {
-  const { price, quantity, metadata = {} } = await request.json();
+  const { price, quantity, blockAmounts } = await request.json();
 
   try {
     const supabase = createRouteHandlerClient({
@@ -26,6 +26,7 @@ export async function POST(request: Request) {
       payment_method_types: ["card"],
       billing_address_collection: "required",
       customer,
+      metadata: blockAmounts,
       line_items: [
         {
           price: price.id,

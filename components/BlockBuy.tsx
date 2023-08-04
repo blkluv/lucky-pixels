@@ -4,6 +4,7 @@ import { useUser } from "../hooks/useUser";
 import { toast } from "react-hot-toast";
 import { postData } from "../libs/helpers";
 import { getStripe } from "../libs/stripeClient";
+import { Json } from "../types_db";
 
 function BlockBuy({ children }) {
   const [blockSidebarState, setBlockSidebarState, setInfoState, products] =
@@ -14,7 +15,6 @@ function BlockBuy({ children }) {
   const [priceIdLoading, setPriceIdLoading] = useState<string>();
   const { user, isLoading } = useUser();
   let blockArray = [];
-
   function changeAmount(direction, amount) {
     if (amount > 0) {
       direction === "x" &&
@@ -36,7 +36,11 @@ function BlockBuy({ children }) {
     return priceString;
   };
 
-  const handleCheckout = async (price: Price, quantity: number) => {
+  const handleCheckout = async (
+    price: Price,
+    quantity: number,
+    blockAmounts: Json
+  ) => {
     setPriceIdLoading(price.id);
     if (!user) {
       setPriceIdLoading(undefined);
@@ -45,9 +49,8 @@ function BlockBuy({ children }) {
     try {
       const { sessionId } = await postData({
         url: "/api/create-checkout-session",
-        data: { price, quantity },
+        data: { price, quantity, blockAmounts },
       });
-
       const stripe = await getStripe();
       stripe?.redirectToCheckout({ sessionId });
     } catch (error) {
@@ -81,7 +84,7 @@ function BlockBuy({ children }) {
         {blockSidebarState
           ? (blockSidebarState[0].x - 1) * 100 + blockSidebarState[0].y
           : "00000"}
-        <div className="badge badge-secondary">AVAILABLE</div>
+        <div className="badge badge-secondary py-3">AVAILABLE</div>
       </h2>
       <button
         onClick={() => setInfoState(true)}
@@ -109,14 +112,22 @@ function BlockBuy({ children }) {
           onChange={(e) => changeAmount("y", parseInt(e.target.value))}
         />
       </div>
-      <p>Current block price: {formatPrice(products[0].prices[0])}</p>
-      <p>Select block amount: {selectedQuantity}</p>
-      <p>
-        Selected block total amount:{" "}
-        {formatPrice(products[0].prices[0], selectedQuantity)}
-      </p>
+      <div className="text-center">
+        <p>Current block price: {formatPrice(products[0].prices[0])}</p>
+        <p>Select block amount: {selectedQuantity}</p>
+        <p className="m-3 font-bold">
+          Total amount: {formatPrice(products[0].prices[0], selectedQuantity)}
+        </p>
+      </div>
       <button
-        onClick={() => handleCheckout(products[0].prices[0], selectedQuantity)}
+        onClick={() =>
+          handleCheckout(products[0].prices[0], selectedQuantity, {
+            xStartBlock: blockSidebarState[0].x,
+            yStartBlock: blockSidebarState[0].y,
+            xAmount: buyXAmount,
+            yAmount: buyYAmount,
+          })
+        }
         className="btn-neutral btn my-10 p-3 px-10"
       >
         {priceIdLoading ? (

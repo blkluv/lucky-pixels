@@ -6,7 +6,8 @@ import { stripe } from "../../../libs/stripe";
 import {
   upsertProductRecord,
   upsertPriceRecord,
-  manageSubscriptionStatusChange,
+  managePaymentStatusChange,
+  manageCheckoutSessionStatusChange,
 } from "../../../libs/supabaseAdmin";
 
 const relevantEvents = new Set([
@@ -15,9 +16,8 @@ const relevantEvents = new Set([
   "price.created",
   "price.updated",
   "checkout.session.completed",
-  "customer.subscription.created",
-  "customer.subscription.updated",
-  "customer.subscription.deleted",
+  "payment_intent.created",
+  "payment_intent.succeeded",
 ]);
 
 export async function POST(request: Request) {
@@ -47,26 +47,22 @@ export async function POST(request: Request) {
         case "price.updated":
           await upsertPriceRecord(event.data.object as Stripe.Price);
           break;
-        case "customer.subscription.created":
-        case "customer.subscription.updated":
-        case "customer.subscription.deleted":
-          const subscription = event.data.object as Stripe.Subscription;
-          await manageSubscriptionStatusChange(
-            subscription.id,
-            subscription.customer as string,
-            event.type === "customer.subscription.created"
+        case "payment_intent.created":
+        case "payment_intent.succeeded":
+          const paymentIntent = event.data.object as Stripe.PaymentIntent;
+          await managePaymentStatusChange(
+            paymentIntent.id,
+            paymentIntent.customer as string,
+            true
           );
           break;
         case "checkout.session.completed":
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          if (checkoutSession.mode === "subscription") {
-            const subscriptionId = checkoutSession.subscription;
-            await manageSubscriptionStatusChange(
-              subscriptionId as string,
-              checkoutSession.customer as string,
-              true
-            );
-          }
+          await manageCheckoutSessionStatusChange(
+            checkoutSession.id,
+            checkoutSession.customer as string,
+            true
+          );
           break;
         default:
           throw new Error("Unhandled relevant event!");

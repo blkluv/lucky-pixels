@@ -1,10 +1,10 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
 import SupabaseProvider from "../providers/SupabaseProvider";
 import UserProvider from "../providers/UserProvider";
 import ToasterProvider from "../providers/ToastProviders";
+import localFont from "next/font/local";
 
-const inter = Inter({ subsets: ["latin"] });
+const myFont = localFont({ src: "../public/Akkurat-Mono.ttf" });
 
 export const metadata = {
   title: "Lucky pixel",
@@ -18,7 +18,7 @@ interface LayoutProps {
 async function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={myFont.className}>
         <ToasterProvider />
         <SupabaseProvider>
           {/* <ModalProvider /> */}

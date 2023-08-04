@@ -1,4 +1,5 @@
 import { Price } from "../types";
+import { Json } from "../types_db";
 
 export const getURL = () => {
   let url =
@@ -17,10 +18,8 @@ export const postData = async ({
   data,
 }: {
   url: string;
-  data?: { price: Price; quantity: number };
+  data?: { price: Price; quantity: number; blockAmounts: Json };
 }) => {
-  console.log("posting,", url, data);
-
   const res: Response = await fetch(url, {
     method: "POST",
     headers: new Headers({ "Content-Type": "application/json" }),

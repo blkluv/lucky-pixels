@@ -24,7 +24,7 @@ function BlockInfo({ children }) {
             {blockSidebarState
               ? (blockSidebarState[0].x - 1) * 100 + blockSidebarState[0].y
               : "00000"}
-            <div className="badge badge-secondary">AVAILABLE</div>
+            <div className="badge badge-secondary py-3">AVAILABLE</div>
           </h2>
           <p>Get a piece of the internet</p>
         </div>
@@ -36,7 +36,7 @@ function BlockInfo({ children }) {
         {user ? "BUY" : "Please login to buy"}
       </button>
       <div className="flex grow flex-col justify-end py-3">
-        <p>Share with your friends and followers</p>
+        <p className="text-center">Share with your friends and followers</p>
         <div className="mt-3 flex justify-around">
           <a
             className="btn-outline btn w-fit"
