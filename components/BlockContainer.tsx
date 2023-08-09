@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import BlockSideBar from "../components/BlockSidebar";
 import MenuSidebar from "../components/MenuSidebar";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { getUser, getUsers } from "../actions/getUsers";
 
 function PixelContainer({ children }) {
   const [blocks, products] = children;
@@ -55,6 +56,18 @@ function PixelContainer({ children }) {
     }
   }, []);
 
+  async function blockInfo(x, y) {
+    // console.log(
+    //   getUser(
+    //     blocks.find(
+    //       (block) => block.position.x == x + 1 && block.position.y == y + 1
+    //     )
+    //   )
+    // );
+    // console.log(getUsers());
+    setBlockSidebarState([{ x: x + 1, y: y + 1 }]);
+  }
+
   return (
     <>
       <div className="absolute">
@@ -72,12 +85,8 @@ function PixelContainer({ children }) {
                               id={"block " + (i + 1) + ", " + (j + 1)}
                               key={j}
                               className={`bg-white opacity-50 hover:opacity-100`}
-                              // onMouseOver={(e) => highlightBlock(e)}
                               style={{ height: 5, width: 5 }}
-                              onClick={() =>
-                                setBlockSidebarState([{ x: j + 1, y: i + 1 }])
-                              }
-                              // onClick={() => highlightBlock(i + 1, j + 1)}
+                              onClick={() => blockInfo(j, i)}
                             />
                           );
                         })}
@@ -91,7 +100,7 @@ function PixelContainer({ children }) {
         </TransformWrapper>
       </div>
       <BlockSideBar>
-        {[blockSidebarState, setBlockSidebarState, products]}
+        {[blockSidebarState, setBlockSidebarState, products, blocks]}
       </BlockSideBar>
       <MenuSidebar />
     </>

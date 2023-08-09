@@ -8,7 +8,10 @@ const getBlocks = async (): Promise<Block[]> => {
     cookies: cookies,
   });
 
-  const { data, error } = await supabase.from("blocks").select("*").limit(100);
+  const { data, error } = await supabase
+    .from("blocks")
+    .select("user_id, image_url, position")
+    .eq("payment_status", "succeeded");
 
   if (error) {
     console.log(error.message);

@@ -5,7 +5,7 @@ import BlockBuy from "./BlockBuy";
 import { useState } from "react";
 
 function BlockSideBar({ children }) {
-  const [blockSidebarState, setBlockSidebarState, products] = children;
+  const [blockSidebarState, setBlockSidebarState, products, blocks] = children;
   const [infoState, setInfoState] = useState(true);
 
   return (
@@ -26,7 +26,7 @@ function BlockSideBar({ children }) {
         <label htmlFor="blockinfo-drawer" className="drawer-overlay"></label>
         <ul className="menu h-full w-80 items-center bg-base-200 p-0">
           {infoState ? (
-            <BlockInfo>{[blockSidebarState, setInfoState]}</BlockInfo>
+            <BlockInfo>{[blockSidebarState, setInfoState, blocks]}</BlockInfo>
           ) : (
             <BlockBuy>
               {[

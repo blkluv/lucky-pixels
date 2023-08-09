@@ -3,9 +3,30 @@ import { AiFillFacebook, AiOutlineTwitter } from "react-icons/ai";
 import { useUser } from "../hooks/useUser";
 import { showModal } from "./AuthModal";
 
+import { getUser } from "../actions/getUsers";
+
 function BlockInfo({ children }) {
   const { user } = useUser();
-  const [blockSidebarState, setInfoState] = children;
+  const [blockSidebarState, setInfoState, blocks] = children;
+  const selectedBlockPurchaceInfo = blocks?.find(
+    (block) =>
+      block.position.x == blockSidebarState[0]?.x &&
+      block.position.y == blockSidebarState[0]?.y
+  );
+  console.log(selectedBlockPurchaceInfo);
+  // getUser(
+  //   blocks.find(
+  //     (block) => block.position.x == x + 1 && block.position.y == y + 1
+  //   )
+  // )
+
+  function buyButtonFunction() {
+    if (user && !selectedBlockPurchaceInfo) {
+      setInfoState(false);
+    } else {
+      showModal();
+    }
+  }
 
   return (
     <>
@@ -13,8 +34,8 @@ function BlockInfo({ children }) {
         <figure>
           <Image
             src="/favicon.ico"
-            width={320}
-            height={320}
+            width={300}
+            height={300}
             alt="Pixel picture"
           />
         </figure>
@@ -24,14 +45,21 @@ function BlockInfo({ children }) {
             {blockSidebarState
               ? (blockSidebarState[0].x - 1) * 100 + blockSidebarState[0].y
               : "00000"}
-            <div className="badge badge-secondary py-3">AVAILABLE</div>
+            <div
+              className={`badge ${
+                selectedBlockPurchaceInfo ? "badge-primary" : "badge-secondary"
+              } py-3`}
+            >
+              {selectedBlockPurchaceInfo ? "SOLD" : "AVAILABLE"}
+            </div>
           </h2>
           <p>Get a piece of the internet</p>
         </div>
       </div>
       <button
         className="btn-neutral btn w-fit p-3 px-10"
-        onClick={() => (user ? setInfoState(false) : showModal())}
+        disabled={selectedBlockPurchaceInfo}
+        onClick={() => buyButtonFunction()}
       >
         {user ? "BUY" : "Please login to buy"}
       </button>

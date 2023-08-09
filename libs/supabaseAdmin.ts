@@ -1,16 +1,24 @@
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
-import { Database } from "../types_db";
+import { Database, Json } from "../types_db";
 import { Price, Product } from "../types";
 
 import { stripe } from "./stripe";
 import { toDateTime } from "./helpers";
+import { metadata } from "../app/layout";
 
 export const supabaseAdmin = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
   process.env.SUPABASE_SERVICE_ROLE_KEY || ""
 );
+
+type BlockData = {
+  xAmount: string;
+  yAmount: string;
+  xStartBlock: string;
+  yStartBlock: string;
+};
 
 const upsertProductRecord = async (product: Stripe.Product) => {
   const productData: Product = {
@@ -115,30 +123,31 @@ const manageCheckoutSessionStatusChange = async (
     checkoutSessionId
   );
 
-  // const checkoutSessionData: Database["public"]["Tables"]["payments"]["Insert"] =
-  //   {
-  //     id: checkoutSession.payment_intent,
-  //     status: checkoutSession.status,
-  //     created: toDateTime(checkoutSession.created).toISOString(),
-  //     user_id: uuid,
-  //     metadata: checkoutSession.metadata,
-  //     customer_details: checkoutSession.customer_details,
-  //     amount: checkoutSession.amount_total,
-  //   };
+  const checkoutSessionData: Database["public"]["Tables"]["payments"]["Insert"] =
+    {
+      id: checkoutSession.payment_intent.toString(),
+      checkout_status: checkoutSession.status,
+      created: toDateTime(checkoutSession.created).toISOString(),
+      user_id: uuid,
+      metadata: checkoutSession.metadata,
+      amount: checkoutSession.amount_total,
+    };
 
-  // const { error } = await supabaseAdmin
-  //   .from("payments")
-  //   .upsert([checkoutSessionData]);
-  // if (error) throw error;
-  // console.log(
-  //   `Inserted/updated checkoutSession [${checkoutSession.id}] for user [${uuid}]`
-  // );
-  // if (createAction && checkoutSession.default_payment_method && uuid)
-  //   //@ts-ignore
-  //   await copyBillingDetailsToCustomer(
-  //     uuid,
-  //     payment.default_payment_method as Stripe.PaymentMethod
-  //   );
+  const { error } = await supabaseAdmin
+    .from("payments")
+    .upsert([checkoutSessionData]);
+  if (error) throw error;
+  console.log(
+    `Inserted/updated checkoutSession [${checkoutSession.payment_intent}] for user [${uuid}]`
+  );
+
+  if (checkoutSession.status === "complete") {
+    await insertBlocks(
+      checkoutSession.payment_intent.toString(),
+      uuid,
+      checkoutSession.metadata as BlockData
+    );
+  }
 };
 
 const managePaymentStatusChange = async (
@@ -157,19 +166,18 @@ const managePaymentStatusChange = async (
 
   const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-  // const paymentIntentData: Database["public"]["Tables"]["payments"]["Insert"] =
-  //   {
-  //     id: paymentIntent.id,
-  //     status: paymentIntent.status,
-  //   };
+  const paymentIntentData: Database["public"]["Tables"]["payments"]["Update"] =
+    {
+      payment_status: paymentIntent.status,
+      amount_received: paymentIntent.amount_received,
+    };
 
-  // const { error } = await supabaseAdmin
-  //   .from("subscriptions")
-  //   .upsert([paymentIntentData]);
-  // if (error) throw error;
-  // console.log(
-  //   `Inserted/updated paymentIntent [${paymentIntent.id}] for user [${uuid}]`
-  // );
+  const { error } = await supabaseAdmin
+    .from("payments")
+    .update(paymentIntentData)
+    .eq("id", paymentIntent.id);
+  if (error) throw error;
+  console.log(`Updated paymentIntent [${paymentIntent.id}] for user [${uuid}]`);
 
   // For a new subscription copy the billing details to the customer object.
   // NOTE: This is a costly operation and should happen at the very end.
@@ -179,6 +187,78 @@ const managePaymentStatusChange = async (
   //     uuid,
   //     payment.default_payment_method as Stripe.PaymentMethod
   //   );
+
+  if (paymentIntent.status === "succeeded") {
+    await updateBlocksStatus(paymentIntent.id, uuid);
+  }
+};
+
+const insertBlocks = async (
+  payment_id: string,
+  uuid: string,
+  blockData?: BlockData
+) => {
+  let blockArray = [];
+  if (metadata) {
+    const { xAmount, yAmount, xStartBlock, yStartBlock } = blockData;
+    for (let i = 0; i < parseInt(xAmount); i++) {
+      blockArray.push(
+        ...[...Array(parseInt(yAmount))].map((y, j) => {
+          return {
+            x: +xStartBlock + j,
+            y: +yStartBlock + i,
+          };
+        })
+      );
+    }
+  }
+
+  const paymentIntentData = blockArray.map((block) => {
+    return {
+      user_id: uuid,
+      payment_id: payment_id,
+      position: {
+        x: block.x,
+        y: block.y,
+      },
+      payment_status: "processing",
+    };
+  });
+
+  const { error } = await supabaseAdmin
+    .from("blocks")
+    //@ts-ignore
+    .upsert(paymentIntentData);
+
+  if (error) throw error;
+  console.log(`Inserted blocks for payment [${payment_id}] for user [${uuid}]`);
+};
+
+const updateBlocksStatus = async (payment_id: string, uuid: string) => {
+  try {
+    const { data } = await supabaseAdmin
+      .from("blocks")
+      .select("*")
+      .eq("payment_id", payment_id)
+      .eq("user_id", uuid)
+      .eq("payment_status", "processing");
+
+    if (data.length > 0) {
+      const updatedData = data.map((block) => {
+        const updatedBlock = { ...block };
+        updatedBlock.payment_status = "succeeded";
+        return updatedBlock;
+      });
+
+      await supabaseAdmin.from("blocks").upsert(updatedData);
+    }
+
+    console.log(
+      `Updated blocks for payment [${payment_id}] for user [${uuid}]`
+    );
+  } catch (err) {
+    if (err) throw err;
+  }
 };
 
 export {
