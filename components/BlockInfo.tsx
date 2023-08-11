@@ -43,14 +43,14 @@ function BlockInfo({ children }) {
             <div
               className={`badge ${
                 selectedBlockPurchaceInfo
-                  ? selectedBlockPurchaceInfo?.user_id == user.id
+                  ? selectedBlockPurchaceInfo?.user_id == user?.id
                     ? "badge-accent"
                     : "badge-primary"
                   : "badge-secondary"
               } py-3`}
             >
               {selectedBlockPurchaceInfo
-                ? selectedBlockPurchaceInfo?.user_id == user.id
+                ? selectedBlockPurchaceInfo?.user_id == user?.id
                   ? "YOUR BLOCK"
                   : "SOLD"
                 : "AVAILABLE"}
