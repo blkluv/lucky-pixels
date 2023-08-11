@@ -11,7 +11,8 @@ const getBlocks = async (): Promise<Block[]> => {
   const { data, error } = await supabase
     .from("blocks")
     .select("user_id, image_url, position")
-    .eq("payment_status", "succeeded");
+    .eq("payment_status", "succeeded")
+    .order("position");
 
   if (error) {
     console.log(error.message);

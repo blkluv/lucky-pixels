@@ -7,7 +7,7 @@ import localFont from "next/font/local";
 const myFont = localFont({ src: "../public/Akkurat-Mono.ttf" });
 
 export const metadata = {
-  title: "Lucky pixel",
+  title: "Lucky Pixels",
   description: "Get a piece of the internet",
 };
 

@@ -13,12 +13,7 @@ function BlockInfo({ children }) {
       block.position.x == blockSidebarState[0]?.x &&
       block.position.y == blockSidebarState[0]?.y
   );
-  console.log(selectedBlockPurchaceInfo);
-  // getUser(
-  //   blocks.find(
-  //     (block) => block.position.x == x + 1 && block.position.y == y + 1
-  //   )
-  // )
+  console.log();
 
   function buyButtonFunction() {
     if (user && !selectedBlockPurchaceInfo) {
@@ -47,10 +42,18 @@ function BlockInfo({ children }) {
               : "00000"}
             <div
               className={`badge ${
-                selectedBlockPurchaceInfo ? "badge-primary" : "badge-secondary"
+                selectedBlockPurchaceInfo
+                  ? selectedBlockPurchaceInfo?.user_id == user.id
+                    ? "badge-accent"
+                    : "badge-primary"
+                  : "badge-secondary"
               } py-3`}
             >
-              {selectedBlockPurchaceInfo ? "SOLD" : "AVAILABLE"}
+              {selectedBlockPurchaceInfo
+                ? selectedBlockPurchaceInfo?.user_id == user.id
+                  ? "YOUR BLOCK"
+                  : "SOLD"
+                : "AVAILABLE"}
             </div>
           </h2>
           <p>Get a piece of the internet</p>

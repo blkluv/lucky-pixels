@@ -34,6 +34,7 @@ function BlockSideBar({ children }) {
                 setBlockSidebarState,
                 setInfoState,
                 products,
+                blocks,
               ]}
             </BlockBuy>
           )}

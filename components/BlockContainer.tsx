@@ -16,13 +16,30 @@ function PixelContainer({ children }) {
 
   useEffect(() => {
     if (blockSidebarState[0].x !== 0 && blockSidebarState[0].y !== 0) {
-      lastBlockState.current?.map((block) => {
+      blocks?.map((block) => {
         var element = document.getElementById(
-          "block " + block.y + ", " + block.x
+          "block " + block.position.y + ", " + block.position.x
         );
         if (element) {
-          element.classList.add("opacity-50");
           element.classList.remove("opacity-100");
+          element.classList.add("opacity-80");
+        }
+      });
+
+      lastBlockState.current?.map((block) => {
+        if (
+          !blocks.find(
+            (soldBlock) =>
+              soldBlock.position.x == block.x && soldBlock.position.y == block.y
+          )
+        ) {
+          var element = document.getElementById(
+            "block " + block.y + ", " + block.x
+          );
+          if (element) {
+            element.classList.add("opacity-50");
+            element.classList.remove("opacity-100");
+          }
         }
       });
       blockSidebarState.map((block) => {
@@ -31,18 +48,36 @@ function PixelContainer({ children }) {
         );
         if (element) {
           element.classList.remove("opacity-50");
+          element.classList.remove("opacity-80");
           element.classList.add("opacity-100");
         }
       });
       lastBlockState.current = blockSidebarState;
     } else {
-      lastBlockState.current?.map((block) => {
+      blocks?.map((block) => {
         var element = document.getElementById(
-          "block " + block.y + ", " + block.x
+          "block " + block.position.y + ", " + block.position.x
         );
         if (element) {
-          element.classList.add("opacity-50");
-          element.classList.remove("opacity-100");
+          element.classList.remove("opacity-50");
+          element.classList.remove("opacity-80");
+          element.classList.add("opacity-100");
+        }
+      });
+      lastBlockState.current?.map((block) => {
+        if (
+          !blocks.find(
+            (soldBlock) =>
+              soldBlock.position.x == block.x && soldBlock.position.y == block.y
+          )
+        ) {
+          var element = document.getElementById(
+            "block " + block.y + ", " + block.x
+          );
+          if (element) {
+            element.classList.add("opacity-50");
+            element.classList.remove("opacity-100");
+          }
         }
       });
     }
@@ -57,14 +92,6 @@ function PixelContainer({ children }) {
   }, []);
 
   async function blockInfo(x, y) {
-    // console.log(
-    //   getUser(
-    //     blocks.find(
-    //       (block) => block.position.x == x + 1 && block.position.y == y + 1
-    //     )
-    //   )
-    // );
-    // console.log(getUsers());
     setBlockSidebarState([{ x: x + 1, y: y + 1 }]);
   }
 

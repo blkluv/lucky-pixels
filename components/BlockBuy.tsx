@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Price, ProductWithPrice } from "../types";
 import { useUser } from "../hooks/useUser";
 import { toast } from "react-hot-toast";
@@ -7,22 +7,30 @@ import { getStripe } from "../libs/stripeClient";
 import { Json } from "../types_db";
 
 function BlockBuy({ children }) {
-  const [blockSidebarState, setBlockSidebarState, setInfoState, products] =
-    children;
+  const [
+    blockSidebarState,
+    setBlockSidebarState,
+    setInfoState,
+    products,
+    blocks,
+  ] = children;
   const [buyXAmount, setBuyXAmount] = useState(1);
   const [buyYAmount, setBuyYAmount] = useState(1);
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
   const [priceIdLoading, setPriceIdLoading] = useState<string>();
   const { user, isLoading } = useUser();
+  const lastXAmount = useRef(buyXAmount);
+  const lastYAmount = useRef(buyYAmount);
   let blockArray = [];
+
   function changeAmount(direction, amount) {
     if (amount > 0) {
-      direction === "x" &&
-        blockSidebarState[0].y + amount - 1 <= 100 &&
+      if (direction === "x" && blockSidebarState[0].y + amount - 1 <= 100) {
         setBuyXAmount(amount);
-      direction === "y" &&
-        blockSidebarState[0].x + amount - 1 <= 100 &&
+      }
+      if (direction === "y" && blockSidebarState[0].x + amount - 1 <= 100) {
         setBuyYAmount(amount);
+      }
     }
   }
 
@@ -72,8 +80,21 @@ function BlockBuy({ children }) {
           })
         );
       }
-      setSelectedQuantity(blockArray.length);
-      setBlockSidebarState(blockArray);
+      let soldBlocksInSelect = blockArray.filter((block) => {
+        return blocks.find(
+          (soldBlock) =>
+            soldBlock.position.x == block.x && soldBlock.position.y == block.y
+        );
+      });
+      if (soldBlocksInSelect.length == 0) {
+        setSelectedQuantity(blockArray.length);
+        setBlockSidebarState(blockArray);
+        lastXAmount.current = buyXAmount;
+        lastYAmount.current = buyYAmount;
+      } else {
+        setBuyXAmount(lastXAmount.current);
+        setBuyYAmount(lastYAmount.current);
+      }
     }
   }, [buyXAmount, buyYAmount]);
 
