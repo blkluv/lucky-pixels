@@ -1,16 +1,20 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createServerComponentClient,
+  createClientComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-
 import { Block } from "../types";
 
-const getBlocks = async (): Promise<Block[]> => {
-  const supabase = createServerComponentClient({
-    cookies: cookies,
-  });
+// const getBlocks = async (): Promise<Block[]> => {
+const getSoldBlocks = async () => {
+  const supabase = createClientComponentClient();
+  // const supabase = createServerComponentClient({
+  //   cookies: cookies,
+  // });
 
   const { data, error } = await supabase
     .from("blocks")
-    .select("user_id, image_url, position")
+    .select("*")
     .eq("payment_status", "succeeded")
     .order("position");
 
@@ -18,7 +22,13 @@ const getBlocks = async (): Promise<Block[]> => {
     console.log(error.message);
   }
 
-  return (data as any) || [];
+  const keyData = [];
+  for (const block of data) {
+    keyData[block.id] = block;
+  }
+  keyData[0] = data;
+
+  return (keyData as any) || [];
 };
 
-export default getBlocks;
+export default getSoldBlocks;

@@ -9,11 +9,39 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      block_groups: {
+        Row: {
+          created_at: string
+          desc: string | null
+          id: number
+          image: string | null
+          link: string | null
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          desc?: string | null
+          id?: number
+          image?: string | null
+          link?: string | null
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          desc?: string | null
+          id?: number
+          image?: string | null
+          link?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
       blocks: {
         Row: {
           created_at: string | null
+          group_id: number | null
           id: number
-          image_url: string | null
+          image: string | null
           payment_id: string
           payment_status: Database["public"]["Enums"]["payment_status"] | null
           position: Json | null
@@ -21,8 +49,9 @@ export interface Database {
         }
         Insert: {
           created_at?: string | null
+          group_id?: number | null
           id?: number
-          image_url?: string | null
+          image?: string | null
           payment_id: string
           payment_status?: Database["public"]["Enums"]["payment_status"] | null
           position?: Json | null
@@ -30,14 +59,21 @@ export interface Database {
         }
         Update: {
           created_at?: string | null
+          group_id?: number | null
           id?: number
-          image_url?: string | null
+          image?: string | null
           payment_id?: string
           payment_status?: Database["public"]["Enums"]["payment_status"] | null
           position?: Json | null
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "blocks_group_id_fkey"
+            columns: ["group_id"]
+            referencedRelation: "block_groups"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "blocks_payment_id_fkey"
             columns: ["payment_id"]
@@ -73,24 +109,6 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
-      }
-      images: {
-        Row: {
-          created_at: string | null
-          id: number
-          image_link: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          image_link?: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          image_link?: string
-        }
-        Relationships: []
       }
       payments: {
         Row: {

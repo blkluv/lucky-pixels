@@ -1,17 +1,17 @@
 import BlockContainer from "../components/BlockContainer";
 import AuthModal from "../components/AuthModal";
-import getBlocks from "../actions/getBlocks";
 import getActiveProductsWithPrices from "../actions/getActiveProductsWithPrices";
+import getSoldBlocks from "../actions/getBlocks";
 
 export const revalidate = 0;
 
 export default async function Home() {
-  const blocks = await getBlocks();
   const products = await getActiveProductsWithPrices();
+  const soldBlocks = await getSoldBlocks();
 
   return (
     <main className="h-screen bg-black">
-      <BlockContainer>{[blocks, products]}</BlockContainer>
+      <BlockContainer>{[soldBlocks, products]}</BlockContainer>
       <AuthModal />
     </main>
   );

@@ -8,24 +8,24 @@ import { useState, useEffect } from "react";
 
 function BlockInfo({ children }) {
   const { user } = useUser();
-  const [blockSidebarState, setInfoState, blocks] = children;
-  const selectedBlockPurchaceInfo = blocks?.find(
+  const [selectedBlocks, setSidebarState, soldBlocks] = children;
+  const blockArray = soldBlocks[0] ?? [];
+  const selectedBlockPurchaceInfo = blockArray?.find(
     (block) =>
-      block.position.x == blockSidebarState[0]?.x &&
-      block.position.y == blockSidebarState[0]?.y
+      block.position.x == selectedBlocks[0]?.x &&
+      block.position.y == selectedBlocks[0]?.y
   );
-
   // useEffect(() => {
-  //   return () => setInfoState("info");
+  //   return () => setSidebarState("info");
   // }, []);
 
   function buttonFunction() {
     if (!user) {
       showModal();
     } else if (!selectedBlockPurchaceInfo) {
-      setInfoState("buy");
+      setSidebarState("buy");
     } else {
-      setInfoState("add");
+      setSidebarState("update");
     }
   }
 
@@ -43,8 +43,8 @@ function BlockInfo({ children }) {
         <div className="card-body">
           <h2 className="card-title">
             Pixel#
-            {blockSidebarState
-              ? (blockSidebarState[0].x - 1) * 100 + blockSidebarState[0].y
+            {selectedBlocks
+              ? (selectedBlocks[0].x - 1) * 100 + selectedBlocks[0].y
               : "00000"}
             <div
               className={`badge ${
@@ -72,7 +72,7 @@ function BlockInfo({ children }) {
       >
         {user
           ? selectedBlockPurchaceInfo?.user_id == user?.id
-            ? "Add info"
+            ? "Update info"
             : "BUY"
           : "Please login to buy"}
       </button>

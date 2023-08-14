@@ -8,11 +8,11 @@ import { Json } from "../types_db";
 
 function BlockBuy({ children }) {
   const [
-    blockSidebarState,
-    setBlockSidebarState,
-    setInfoState,
+    selectedBlocks,
+    setSelectedBlocks,
+    setSidebarState,
     products,
-    blocks,
+    soldBlocks,
   ] = children;
   const [buyXAmount, setBuyXAmount] = useState(1);
   const [buyYAmount, setBuyYAmount] = useState(1);
@@ -25,10 +25,10 @@ function BlockBuy({ children }) {
 
   function changeAmount(direction, amount) {
     if (amount > 0) {
-      if (direction === "x" && blockSidebarState[0].y + amount - 1 <= 100) {
+      if (direction === "x" && selectedBlocks[0].y + amount - 1 <= 100) {
         setBuyXAmount(amount);
       }
-      if (direction === "y" && blockSidebarState[0].x + amount - 1 <= 100) {
+      if (direction === "y" && selectedBlocks[0].x + amount - 1 <= 100) {
         setBuyYAmount(amount);
       }
     }
@@ -74,21 +74,18 @@ function BlockBuy({ children }) {
         blockArray.push(
           ...[...Array(buyYAmount)].map((y, j) => {
             return {
-              x: blockSidebarState[0].x + j,
-              y: blockSidebarState[0].y + i,
+              x: selectedBlocks[0].x + j,
+              y: selectedBlocks[0].y + i,
             };
           })
         );
       }
       let soldBlocksInSelect = blockArray.filter((block) => {
-        return blocks.find(
-          (soldBlock) =>
-            soldBlock.position.x == block.x && soldBlock.position.y == block.y
-        );
+        return soldBlocks[(block.x - 1) * 100 + block.y];
       });
       if (soldBlocksInSelect.length == 0) {
         setSelectedQuantity(blockArray.length);
-        setBlockSidebarState(blockArray);
+        setSelectedBlocks(blockArray);
         lastXAmount.current = buyXAmount;
         lastYAmount.current = buyYAmount;
       } else {
@@ -102,13 +99,13 @@ function BlockBuy({ children }) {
     <div className="flex flex-col items-center py-3">
       <h2 className="card-title">
         Pixel#
-        {blockSidebarState
-          ? (blockSidebarState[0].x - 1) * 100 + blockSidebarState[0].y
+        {selectedBlocks
+          ? (selectedBlocks[0].x - 1) * 100 + selectedBlocks[0].y
           : "00000"}
         <div className="badge badge-secondary py-3">AVAILABLE</div>
       </h2>
       <button
-        onClick={() => setInfoState("info")}
+        onClick={() => setSidebarState("info")}
         className="btn-ghost btn-xs my-3 mb-10 w-fit underline"
       >
         Go to block
@@ -143,8 +140,8 @@ function BlockBuy({ children }) {
       <button
         onClick={() =>
           handleCheckout(products[0].prices[0], selectedQuantity, {
-            xStartBlock: blockSidebarState[0].x,
-            yStartBlock: blockSidebarState[0].y,
+            xStartBlock: selectedBlocks[0].x,
+            yStartBlock: selectedBlocks[0].y,
             xAmount: buyXAmount,
             yAmount: buyYAmount,
           })

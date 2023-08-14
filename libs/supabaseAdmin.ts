@@ -189,7 +189,7 @@ const managePaymentStatusChange = async (
   //   );
 
   if (paymentIntent.status === "succeeded") {
-    await updateBlocksStatus(paymentIntent.id, uuid);
+    await updateBlockStatus(paymentIntent.id, uuid);
   }
 };
 
@@ -198,6 +198,8 @@ const insertBlocks = async (
   uuid: string,
   blockData?: BlockData
 ) => {
+  const { data } = await supabaseAdmin.from("block_groups").insert({}).select();
+
   let blockArray = [];
   if (metadata) {
     const { xAmount, yAmount, xStartBlock, yStartBlock } = blockData;
@@ -214,7 +216,9 @@ const insertBlocks = async (
   }
 
   const paymentIntentData = blockArray.map((block) => {
+    const id = (parseInt(block.x) - 1) * 100 + parseInt(block.y);
     return {
+      id: id,
       user_id: uuid,
       payment_id: payment_id,
       position: {
@@ -222,8 +226,11 @@ const insertBlocks = async (
         y: block.y,
       },
       payment_status: "processing",
+      group_id: data[0].id,
     };
   });
+
+  console.log(paymentIntentData);
 
   const { error } = await supabaseAdmin
     .from("blocks")
@@ -234,7 +241,7 @@ const insertBlocks = async (
   console.log(`Inserted blocks for payment [${payment_id}] for user [${uuid}]`);
 };
 
-const updateBlocksStatus = async (payment_id: string, uuid: string) => {
+const updateBlockStatus = async (payment_id: string, uuid: string) => {
   try {
     const { data } = await supabaseAdmin
       .from("blocks")
@@ -243,12 +250,16 @@ const updateBlocksStatus = async (payment_id: string, uuid: string) => {
       .eq("user_id", uuid)
       .eq("payment_status", "processing");
 
+    console.log(data);
+
     if (data.length > 0) {
       const updatedData = data.map((block) => {
         const updatedBlock = { ...block };
         updatedBlock.payment_status = "succeeded";
         return updatedBlock;
       });
+
+      console.log(updatedData);
 
       await supabaseAdmin.from("blocks").upsert(updatedData);
     }

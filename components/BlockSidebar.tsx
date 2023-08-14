@@ -1,20 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import BlockInfo from "./BlockInfo";
 import BlockBuy from "./BlockBuy";
-import { useState } from "react";
+import BlockInfoUpdate from "./BlockInfoUpdate";
 
 function BlockSideBar({ children }) {
-  const [blockSidebarState, setBlockSidebarState, products, blocks] = children;
-  const [infoState, setInfoState] = useState("info");
-  console.log(infoState);
+  const [selectedBlocks, setSelectedBlocks, products, soldBlocks] = children;
+  const [sidebarState, setSidebarState] = useState("info");
+
   return (
     <div
       className={`drawer ${
-        blockSidebarState[0]?.x && blockSidebarState[0]?.y && "drawer-open"
+        selectedBlocks[0]?.x && selectedBlocks[0]?.y && "drawer-open"
       }`}
       onClick={() => {
-        setBlockSidebarState([{ x: 0, y: 0 }]), setInfoState("info");
+        setSelectedBlocks([{ x: 0, y: 0 }]), setSidebarState("info");
       }}
     >
       <input id="blockinfo-drawer" type="checkbox" className="drawer-toggle" />
@@ -25,19 +26,26 @@ function BlockSideBar({ children }) {
       >
         <label htmlFor="blockinfo-drawer" className="drawer-overlay"></label>
         <ul className="menu h-full w-80 items-center bg-base-200 p-0">
-          {infoState == "info" && (
-            <BlockInfo>{[blockSidebarState, setInfoState, blocks]}</BlockInfo>
+          {sidebarState == "info" && (
+            <BlockInfo>
+              {[selectedBlocks, setSidebarState, soldBlocks]}
+            </BlockInfo>
           )}
-          {infoState == "buy" && (
+          {sidebarState == "buy" && (
             <BlockBuy>
               {[
-                blockSidebarState,
-                setBlockSidebarState,
-                setInfoState,
+                selectedBlocks,
+                setSelectedBlocks,
+                setSidebarState,
                 products,
-                blocks,
+                soldBlocks,
               ]}
             </BlockBuy>
+          )}
+          {sidebarState == "update" && (
+            <BlockInfoUpdate>
+              {[selectedBlocks, selectedBlocks, setSidebarState]}
+            </BlockInfoUpdate>
           )}
         </ul>
       </div>

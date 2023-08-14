@@ -1,10 +1,19 @@
 import Stripe from "stripe";
+import { Database, Json } from "./types_db";
+
+interface Position {
+  x: number;
+  y: number;
+}
 
 export interface Block {
-  id: string;
-  block_type: string;
-  owner_id: string;
-  image_id: string;
+  created_at: string | null;
+  id: number;
+  image_url: string | null;
+  payment_id: string;
+  payment_status: Database["public"]["Enums"]["payment_status"] | null;
+  position: Position | null;
+  user_id: string | null;
 }
 
 export interface Image {
@@ -54,23 +63,4 @@ export interface UserDetails {
 
 export interface ProductWithPrice extends Product {
   prices?: Price[];
-}
-
-export interface Subscription {
-  id: string;
-  user_id: string;
-  status?: Stripe.Subscription.Status;
-  metadata?: Stripe.Metadata;
-  price_id?: string;
-  quantity?: number;
-  cancel_at_period_end?: boolean;
-  created: string;
-  current_period_start: string;
-  current_period_end: string;
-  ended_at?: string;
-  cancel_at?: string;
-  canceled_at?: string;
-  trial_start?: string;
-  trial_end?: string;
-  prices?: Price;
 }

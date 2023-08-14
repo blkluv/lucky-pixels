@@ -6,17 +6,17 @@ import { toast } from "react-hot-toast";
 import BlockSideBar from "../components/BlockSidebar";
 import MenuSidebar from "../components/MenuSidebar";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { getUser, getUsers } from "../actions/getUsers";
+// import { getUser, getUsers } from "../actions/getUsers";
 
 function PixelContainer({ children }) {
-  const [blocks, products] = children;
-  const [blockSidebarState, setBlockSidebarState] = useState([{ x: 0, y: 0 }]);
+  const [soldBlocks, products] = children;
+  const [selectedBlocks, setSelectedBlocks] = useState([{ x: 0, y: 0 }]);
   const lastBlockState = useRef([]);
   const search = useSearchParams();
 
   useEffect(() => {
-    if (blockSidebarState[0].x !== 0 && blockSidebarState[0].y !== 0) {
-      blocks?.map((block) => {
+    if (selectedBlocks[0].x !== 0 && selectedBlocks[0].y !== 0) {
+      soldBlocks[0]?.map((block) => {
         var element = document.getElementById(
           "block " + block.position.y + ", " + block.position.x
         );
@@ -25,14 +25,8 @@ function PixelContainer({ children }) {
           element.classList.add("opacity-80");
         }
       });
-
       lastBlockState.current?.map((block) => {
-        if (
-          !blocks.find(
-            (soldBlock) =>
-              soldBlock.position.x == block.x && soldBlock.position.y == block.y
-          )
-        ) {
+        if (!soldBlocks[(block.x - 1) * 100 + block.y]) {
           var element = document.getElementById(
             "block " + block.y + ", " + block.x
           );
@@ -42,7 +36,7 @@ function PixelContainer({ children }) {
           }
         }
       });
-      blockSidebarState.map((block) => {
+      selectedBlocks.map((block) => {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
@@ -52,9 +46,9 @@ function PixelContainer({ children }) {
           element.classList.add("opacity-100");
         }
       });
-      lastBlockState.current = blockSidebarState;
+      lastBlockState.current = selectedBlocks;
     } else {
-      blocks?.map((block) => {
+      soldBlocks[0]?.map((block) => {
         var element = document.getElementById(
           "block " + block.position.y + ", " + block.position.x
         );
@@ -65,12 +59,7 @@ function PixelContainer({ children }) {
         }
       });
       lastBlockState.current?.map((block) => {
-        if (
-          !blocks.find(
-            (soldBlock) =>
-              soldBlock.position.x == block.x && soldBlock.position.y == block.y
-          )
-        ) {
+        if (!soldBlocks[(block.x - 1) * 100 + block.y]) {
           var element = document.getElementById(
             "block " + block.y + ", " + block.x
           );
@@ -81,7 +70,7 @@ function PixelContainer({ children }) {
         }
       });
     }
-  }, [blockSidebarState]);
+  }, [selectedBlocks]);
 
   useEffect(() => {
     const checkoutState = search.get("checkout");
@@ -92,7 +81,7 @@ function PixelContainer({ children }) {
   }, []);
 
   async function blockInfo(x, y) {
-    setBlockSidebarState([{ x: x + 1, y: y + 1 }]);
+    setSelectedBlocks([{ x: x + 1, y: y + 1 }]);
   }
 
   return (
@@ -107,6 +96,7 @@ function PixelContainer({ children }) {
                     return (
                       <div key={i}>
                         {[...Array(100)].map((y, j) => {
+                          // const currentBlockId = j * 100 + i + 1;
                           return (
                             <div
                               id={"block " + (i + 1) + ", " + (j + 1)}
@@ -127,7 +117,7 @@ function PixelContainer({ children }) {
         </TransformWrapper>
       </div>
       <BlockSideBar>
-        {[blockSidebarState, setBlockSidebarState, products, blocks]}
+        {[selectedBlocks, setSelectedBlocks, products, soldBlocks]}
       </BlockSideBar>
       <MenuSidebar />
     </>
