@@ -66,8 +66,6 @@ function AuthModal() {
             <h3 className="text-lg font-bold">Hello!</h3>
             <Auth
               supabaseClient={supabaseClient}
-              // supabaseClient={supabase}
-              // onlyThirdPartyProviders={true}
               providers={["google"]}
               appearance={{
                 theme: ThemeSupa,

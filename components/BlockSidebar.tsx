@@ -6,15 +6,15 @@ import { useState } from "react";
 
 function BlockSideBar({ children }) {
   const [blockSidebarState, setBlockSidebarState, products, blocks] = children;
-  const [infoState, setInfoState] = useState(true);
-
+  const [infoState, setInfoState] = useState("info");
+  console.log(infoState);
   return (
     <div
       className={`drawer ${
         blockSidebarState[0]?.x && blockSidebarState[0]?.y && "drawer-open"
       }`}
       onClick={() => {
-        setBlockSidebarState([{ x: 0, y: 0 }]), setInfoState(true);
+        setBlockSidebarState([{ x: 0, y: 0 }]), setInfoState("info");
       }}
     >
       <input id="blockinfo-drawer" type="checkbox" className="drawer-toggle" />
@@ -25,9 +25,10 @@ function BlockSideBar({ children }) {
       >
         <label htmlFor="blockinfo-drawer" className="drawer-overlay"></label>
         <ul className="menu h-full w-80 items-center bg-base-200 p-0">
-          {infoState ? (
+          {infoState == "info" && (
             <BlockInfo>{[blockSidebarState, setInfoState, blocks]}</BlockInfo>
-          ) : (
+          )}
+          {infoState == "buy" && (
             <BlockBuy>
               {[
                 blockSidebarState,

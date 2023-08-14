@@ -4,6 +4,7 @@ import { useUser } from "../hooks/useUser";
 import { showModal } from "./AuthModal";
 
 import { getUser } from "../actions/getUsers";
+import { useState, useEffect } from "react";
 
 function BlockInfo({ children }) {
   const { user } = useUser();
@@ -13,13 +14,18 @@ function BlockInfo({ children }) {
       block.position.x == blockSidebarState[0]?.x &&
       block.position.y == blockSidebarState[0]?.y
   );
-  console.log();
 
-  function buyButtonFunction() {
-    if (user && !selectedBlockPurchaceInfo) {
-      setInfoState(false);
-    } else {
+  // useEffect(() => {
+  //   return () => setInfoState("info");
+  // }, []);
+
+  function buttonFunction() {
+    if (!user) {
       showModal();
+    } else if (!selectedBlockPurchaceInfo) {
+      setInfoState("buy");
+    } else {
+      setInfoState("add");
     }
   }
 
@@ -61,10 +67,14 @@ function BlockInfo({ children }) {
       </div>
       <button
         className="btn-neutral btn w-fit p-3 px-10"
-        disabled={selectedBlockPurchaceInfo}
-        onClick={() => buyButtonFunction()}
+        disabled={selectedBlockPurchaceInfo && !user}
+        onClick={() => buttonFunction()}
       >
-        {user ? "BUY" : "Please login to buy"}
+        {user
+          ? selectedBlockPurchaceInfo?.user_id == user?.id
+            ? "Add info"
+            : "BUY"
+          : "Please login to buy"}
       </button>
       <div className="flex grow flex-col justify-end py-3">
         <p className="text-center">Share with your friends and followers</p>

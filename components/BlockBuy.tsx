@@ -108,7 +108,7 @@ function BlockBuy({ children }) {
         <div className="badge badge-secondary py-3">AVAILABLE</div>
       </h2>
       <button
-        onClick={() => setInfoState(true)}
+        onClick={() => setInfoState("info")}
         className="btn-ghost btn-xs my-3 mb-10 w-fit underline"
       >
         Go to block
