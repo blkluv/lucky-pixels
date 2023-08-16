@@ -38,6 +38,7 @@ export async function POST(request: Request) {
 
   if (relevantEvents.has(event.type)) {
     try {
+      console.log(`Webhook event ${event.type}`);
       switch (event.type) {
         case "product.created":
         case "product.updated":
