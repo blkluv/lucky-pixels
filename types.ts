@@ -6,6 +6,17 @@ interface Position {
   y: number;
 }
 
+export interface Payment {
+  amount: number;
+  amount_received: number | null;
+  checkout_status: Database["public"]["Enums"]["checkout_status"] | null;
+  created: string;
+  id: string;
+  metadata: Json | null;
+  payment_status: Database["public"]["Enums"]["payment_status"] | null;
+  user_id: string;
+}
+
 export interface Block {
   created_at: string | null;
   id: number;

@@ -79,12 +79,6 @@ export interface Database {
             columns: ["payment_id"]
             referencedRelation: "payments"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "blocks_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
           }
         ]
       }
@@ -117,7 +111,7 @@ export interface Database {
           checkout_status: Database["public"]["Enums"]["checkout_status"] | null
           created: string
           id: string
-          metadata: Json
+          metadata: Json | null
           payment_status: Database["public"]["Enums"]["payment_status"] | null
           user_id: string
         }
@@ -129,7 +123,7 @@ export interface Database {
             | null
           created?: string
           id: string
-          metadata: Json
+          metadata?: Json | null
           payment_status?: Database["public"]["Enums"]["payment_status"] | null
           user_id: string
         }
@@ -141,7 +135,7 @@ export interface Database {
             | null
           created?: string
           id?: string
-          metadata?: Json
+          metadata?: Json | null
           payment_status?: Database["public"]["Enums"]["payment_status"] | null
           user_id?: string
         }

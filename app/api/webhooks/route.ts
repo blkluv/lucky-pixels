@@ -6,8 +6,7 @@ import { stripe } from "../../../libs/stripe";
 import {
   upsertProductRecord,
   upsertPriceRecord,
-  managePaymentStatusChange,
-  manageCheckoutSessionStatusChange,
+  managePayment,
 } from "../../../libs/supabaseAdmin";
 
 const relevantEvents = new Set([
@@ -16,7 +15,7 @@ const relevantEvents = new Set([
   "price.created",
   "price.updated",
   "checkout.session.completed",
-  "payment_intent.created",
+  // "payment_intent.created",
   "payment_intent.succeeded",
 ]);
 
@@ -38,7 +37,7 @@ export async function POST(request: Request) {
 
   if (relevantEvents.has(event.type)) {
     try {
-      console.log(`Webhook event ${event.type}`);
+      // console.log(`Webhook event ${event.type}`);
       switch (event.type) {
         case "product.created":
         case "product.updated":
@@ -48,21 +47,21 @@ export async function POST(request: Request) {
         case "price.updated":
           await upsertPriceRecord(event.data.object as Stripe.Price);
           break;
-        case "payment_intent.created":
+        // case "payment_intent.created":
         case "payment_intent.succeeded":
           const paymentIntent = event.data.object as Stripe.PaymentIntent;
-          await managePaymentStatusChange(
+          await managePayment(
             paymentIntent.id,
             paymentIntent.customer as string,
-            true
+            "payment_intent"
           );
           break;
         case "checkout.session.completed":
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          await manageCheckoutSessionStatusChange(
+          await managePayment(
             checkoutSession.id,
             checkoutSession.customer as string,
-            true
+            "checkout"
           );
           break;
         default:
