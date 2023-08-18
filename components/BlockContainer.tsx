@@ -96,12 +96,16 @@ function PixelContainer({ children }) {
                     return (
                       <div key={i}>
                         {[...Array(100)].map((y, j) => {
-                          // const currentBlockId = j * 100 + i + 1;
+                          const currentBlockId = j * 100 + i + 1;
                           return (
                             <div
                               id={"block " + (i + 1) + ", " + (j + 1)}
                               key={j}
-                              className={`bg-white opacity-50 hover:opacity-100`}
+                              className={`bg-white ${
+                                soldBlocks[currentBlockId]
+                                  ? "opacity-80"
+                                  : "opacity-50"
+                              } hover:opacity-100`}
                               style={{ height: 5, width: 5 }}
                               onClick={() => blockInfo(j, i)}
                             />
