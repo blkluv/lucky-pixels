@@ -176,25 +176,25 @@ const insertBlocks = async (
   uuid: string,
   metaData?: MetaData
 ) => {
-  const { data: blocks } = await supabaseAdmin
-    .from("blocks")
-    .select("*")
-    .eq("payment_id", payment.id);
+  // const { data: blocks } = await supabaseAdmin
+  //   .from("blocks")
+  //   .select("*")
+  //   .eq("payment_id", payment.id);
 
-  console.log(blocks.length);
-  if (blocks.length > 0) {
-    return null;
-  }
+  // console.log(blocks.length);
+  // if (blocks.length > 0) {
+  //   return null;
+  // }
 
-  const { data: groupData, error: groupError } = await supabaseAdmin
-    .from("block_groups")
-    .insert({})
-    .select();
+  // const { data: groupData, error: groupError } = await supabaseAdmin
+  //   .from("block_groups")
+  //   .insert({})
+  //   .select();
 
-  if (groupError) throw groupError;
-  console.log(
-    `Inserted block_group for payment [${groupData[0].id}] for user [${uuid}]`
-  );
+  // if (groupError) throw groupError;
+  // console.log(
+  //   `Inserted block_group for payment [${groupData[0].id}] for user [${uuid}]`
+  // );
 
   let blockArray = [];
   if (metadata) {
@@ -222,7 +222,7 @@ const insertBlocks = async (
         y: block.y,
       },
       payment_status: "processing",
-      group_id: groupData[0].id,
+      // group_id: groupData[0].id,
     };
   });
 
@@ -230,8 +230,6 @@ const insertBlocks = async (
     .from("blocks")
     //@ts-ignore
     .upsert(blockData);
-
-  console.log(`Inserted blocks for payment [${payment.id}] for user [${uuid}]`);
 
   if (error) throw error;
   console.log(`Inserted blocks for payment [${payment.id}] for user [${uuid}]`);

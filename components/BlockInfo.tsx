@@ -15,9 +15,7 @@ function BlockInfo({ children }) {
       block.position.x == selectedBlocks[0]?.x &&
       block.position.y == selectedBlocks[0]?.y
   );
-  // useEffect(() => {
-  //   return () => setSidebarState("info");
-  // }, []);
+  console.log(selectedBlockPurchaceInfo);
 
   function buttonFunction() {
     if (!user) {

@@ -37,6 +37,22 @@ function BlockInfoInput({ children }) {
       }
     }
   }
+  let blockArray = [];
+  useEffect(() => {
+    if (updateXAmount != 1 || updateYAmount != 1) {
+      for (let i = 0; i < updateXAmount; i++) {
+        blockArray.push(
+          ...[...Array(updateYAmount)].map((y, j) => {
+            return {
+              x: selectedBlocks[0].x + j,
+              y: selectedBlocks[0].y + i,
+            };
+          })
+        );
+      }
+      setSelectedBlocks(blockArray);
+    }
+  }, [updateXAmount, updateYAmount]);
 
   const onSubmit: SubmitHandler<FieldValues> = async (values) => {
     try {
@@ -59,31 +75,52 @@ function BlockInfoInput({ children }) {
             cacheControl: "3600",
             upsert: false,
           });
-      console.log(imageError);
       if (imageError) {
         setLoading(false);
+        console.log(imageError);
         return toast.error("Failed image upload");
       }
 
-      // Create record
-      const { error: supabaseError } = await supabaseClient
+      // Create group
+      const { data: groupData, error: groupError } = await supabaseClient
         .from("block_groups")
         .insert({
           title: values.title,
           desc: values.description,
           image: imageData.path,
           link: values.link,
-        });
-
-      if (supabaseError) {
-        return toast.error(supabaseError.message);
+        })
+        .select();
+      if (groupError) {
+        console.log();
+        return toast.error(groupError.message);
       }
+
+      // Select selected block groupID
+      // const { data: selectedBlockData } = await supabaseClient
+      //   .from("blocks")
+      //   .select("*")
+      //   .eq("id", (selectedBlocks[0].x - 1) * 100 + selectedBlocks[0].y);
+      // Update block
+      selectedBlocks.forEach(async (block) => {
+        const updateId: number = (block.x - 1) * 100 + block.y;
+        console.log(updateId);
+
+        await supabaseClient
+          .from("blocks")
+          .update({
+            image: imageData.path,
+            group_id: groupData[0].id,
+          })
+          .eq("id", updateId);
+      });
 
       router.refresh();
       setLoading(false);
       toast.success("Block updated!");
       reset();
     } catch (error) {
+      setLoading(false);
       toast.error("Something went wrong");
     } finally {
       setLoading(false);

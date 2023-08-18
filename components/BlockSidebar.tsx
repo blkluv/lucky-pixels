@@ -44,7 +44,7 @@ function BlockSideBar({ children }) {
           )}
           {sidebarState == "update" && (
             <BlockInfoUpdate>
-              {[selectedBlocks, selectedBlocks, setSidebarState]}
+              {[selectedBlocks, setSelectedBlocks, setSidebarState]}
             </BlockInfoUpdate>
           )}
         </ul>
