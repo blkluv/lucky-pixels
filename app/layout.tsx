@@ -21,7 +21,6 @@ async function RootLayout({ children }: LayoutProps) {
       <body className={myFont.className}>
         <ToasterProvider />
         <SupabaseProvider>
-          {/* <ModalProvider /> */}
           <UserProvider>{children}</UserProvider>
         </SupabaseProvider>
       </body>

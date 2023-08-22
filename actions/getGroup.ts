@@ -2,23 +2,42 @@ import {
   createServerComponentClient,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { Block } from "../types";
 
-// const getBlocks = async (): Promise<Block[]> => {
-const getSoldBlocks = async (id: number) => {
+// const getGroupBlocks = async (id: number) => {
+//   const supabase = createClientComponentClient();
+
+//   const { data, error } = await supabase
+//     .from("block_groups")
+//     .select("*")
+//     .eq("id", id)
+//     .single();
+//   if (error) {
+//     console.log(error.message);
+//   }
+//   const { data: blockData, error: blockError } = await supabase
+//     .from("block")
+//     .select("*")
+//     .eq("id", id)
+//     .single();
+//   if (error) {
+//     console.log(error.message);
+//   }
+//   return (data as any) || [];
+// };
+
+const getBlockGroup = async (id: number) => {
   const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
     .from("block_groups")
     .select("*")
-    .eq("payment_status", "succeeded")
-    .order("position");
+    .eq("id", id)
+    .single();
 
   if (error) {
     console.log(error.message);
   }
-  return data[0] || [];
+  return (data as any) || [];
 };
 
-export default getSoldBlocks;
+export { getBlockGroup };

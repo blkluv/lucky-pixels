@@ -18,7 +18,9 @@ function BlockBuy({ children }) {
   const [buyYAmount, setBuyYAmount] = useState(1);
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
   const [priceIdLoading, setPriceIdLoading] = useState<string>();
+
   const { user, isLoading } = useUser();
+
   const lastXAmount = useRef(buyXAmount);
   const lastYAmount = useRef(buyYAmount);
   let blockArray = [];
@@ -33,6 +35,33 @@ function BlockBuy({ children }) {
       }
     }
   }
+
+  useEffect(() => {
+    if (buyXAmount != 1 || buyYAmount != 1) {
+      for (let i = 0; i < buyXAmount; i++) {
+        blockArray.push(
+          ...[...Array(buyYAmount)].map((y, j) => {
+            return {
+              x: selectedBlocks[0].x + j,
+              y: selectedBlocks[0].y + i,
+            };
+          })
+        );
+      }
+      let soldBlocksInSelect = blockArray.filter((block) => {
+        return soldBlocks[(block.x - 1) * 100 + block.y];
+      });
+      if (soldBlocksInSelect.length == 0) {
+        setSelectedQuantity(blockArray.length);
+        setSelectedBlocks(blockArray);
+        lastXAmount.current = buyXAmount;
+        lastYAmount.current = buyYAmount;
+      } else {
+        setBuyXAmount(lastXAmount.current);
+        setBuyYAmount(lastYAmount.current);
+      }
+    }
+  }, [buyXAmount, buyYAmount]);
 
   const formatPrice = (price: Price, quantity?: number) => {
     quantity = quantity ? quantity : 1;
@@ -67,33 +96,6 @@ function BlockBuy({ children }) {
       setPriceIdLoading(undefined);
     }
   };
-
-  useEffect(() => {
-    if (buyXAmount != 1 || buyYAmount != 1) {
-      for (let i = 0; i < buyXAmount; i++) {
-        blockArray.push(
-          ...[...Array(buyYAmount)].map((y, j) => {
-            return {
-              x: selectedBlocks[0].x + j,
-              y: selectedBlocks[0].y + i,
-            };
-          })
-        );
-      }
-      let soldBlocksInSelect = blockArray.filter((block) => {
-        return soldBlocks[(block.x - 1) * 100 + block.y];
-      });
-      if (soldBlocksInSelect.length == 0) {
-        setSelectedQuantity(blockArray.length);
-        setSelectedBlocks(blockArray);
-        lastXAmount.current = buyXAmount;
-        lastYAmount.current = buyYAmount;
-      } else {
-        setBuyXAmount(lastXAmount.current);
-        setBuyYAmount(lastYAmount.current);
-      }
-    }
-  }, [buyXAmount, buyYAmount]);
 
   return (
     <div className="flex flex-col items-center py-3">

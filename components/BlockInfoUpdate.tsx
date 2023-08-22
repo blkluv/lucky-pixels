@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FieldValues, useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
@@ -7,16 +7,25 @@ import { useRouter } from "next/navigation";
 import uniqid from "uniqid";
 
 function BlockInfoInput({ children }) {
-  const [selectedBlocks, setSelectedBlocks, setSidebarState, soldBlocks] =
+  const [selectedBlocks, setSelectedBlocks, setSidebarState, userBlocks] =
     children;
 
   const [updateXAmount, setUpdateXAmount] = useState(1);
   const [updateYAmount, setUpdateYAmount] = useState(1);
   const [loading, setLoading] = useState<boolean>();
 
+  const lastXAmount = useRef(updateXAmount);
+  const lastYAmount = useRef(updateYAmount);
+
   const supabaseClient = useSupabaseClient();
   const { user } = useUser();
   const router = useRouter();
+  let blockArray = [];
+
+  useEffect(() => {
+    // console.log(selectedBlocks);
+    // setSelectedBlocks(selectedBlocks[0]);
+  }, []);
 
   const { register, handleSubmit, reset } = useForm<FieldValues>({
     defaultValues: {
@@ -37,7 +46,7 @@ function BlockInfoInput({ children }) {
       }
     }
   }
-  let blockArray = [];
+
   useEffect(() => {
     if (updateXAmount != 1 || updateYAmount != 1) {
       for (let i = 0; i < updateXAmount; i++) {
@@ -50,6 +59,18 @@ function BlockInfoInput({ children }) {
           })
         );
       }
+      let nonUserOwnedBlocks = blockArray.filter(
+        (block) => !userBlocks[(block.x - 1) * 100 + block.y]
+      );
+      if (nonUserOwnedBlocks.length == 0) {
+        setSelectedBlocks(blockArray);
+        lastXAmount.current = updateXAmount;
+        lastYAmount.current = updateYAmount;
+      } else {
+        setUpdateXAmount(lastXAmount.current);
+        setUpdateYAmount(lastYAmount.current);
+      }
+
       setSelectedBlocks(blockArray);
     }
   }, [updateXAmount, updateYAmount]);

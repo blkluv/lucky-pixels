@@ -32,15 +32,8 @@ export const MyUserContextProvider = (props: Props) => {
   const accessToken = session?.access_token ?? null;
   const [isLoadingData, setIsloadingData] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
-  // const [subscription, setSubscription] = useState<Subscription | null>(null);
 
-  const getUserDetails = () => supabase.from("users").select("*").single();
-  const getSubscription = () =>
-    supabase
-      .from("subscriptions")
-      .select("*, prices(*, products(*))")
-      .in("status", ["trialing", "active"])
-      .single();
+  const getUserDetails = () => supabase.from("users").select("*");
 
   useEffect(() => {
     if (user && !isLoadingData && !userDetails) {
@@ -48,7 +41,8 @@ export const MyUserContextProvider = (props: Props) => {
       Promise.allSettled([getUserDetails()]).then((results) => {
         const userDetailsPromise = results[0];
         if (userDetailsPromise.status === "fulfilled")
-          setUserDetails(userDetailsPromise.value.data as UserDetails);
+          //@ts-ignore
+          setUserDetails(userDetailsPromise?.value?.data as UserDetails);
         setIsloadingData(false);
       });
     } else if (!user && !isLoadingUser && !isLoadingData) {

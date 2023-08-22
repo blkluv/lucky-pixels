@@ -6,7 +6,8 @@ import BlockBuy from "./BlockBuy";
 import BlockInfoUpdate from "./BlockInfoUpdate";
 
 function BlockSideBar({ children }) {
-  const [selectedBlocks, setSelectedBlocks, products, soldBlocks] = children;
+  const [selectedBlocks, setSelectedBlocks, products, soldBlocks, userBlocks] =
+    children;
   const [sidebarState, setSidebarState] = useState("info");
 
   return (
@@ -28,7 +29,7 @@ function BlockSideBar({ children }) {
         <ul className="menu h-full w-80 items-center bg-base-200 p-0">
           {sidebarState == "info" && (
             <BlockInfo>
-              {[selectedBlocks, setSidebarState, soldBlocks]}
+              {[selectedBlocks, setSelectedBlocks, setSidebarState, soldBlocks]}
             </BlockInfo>
           )}
           {sidebarState == "buy" && (
@@ -44,7 +45,7 @@ function BlockSideBar({ children }) {
           )}
           {sidebarState == "update" && (
             <BlockInfoUpdate>
-              {[selectedBlocks, setSelectedBlocks, setSidebarState]}
+              {[selectedBlocks, setSelectedBlocks, setSidebarState, userBlocks]}
             </BlockInfoUpdate>
           )}
         </ul>

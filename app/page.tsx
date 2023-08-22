@@ -1,7 +1,7 @@
 import BlockContainer from "../components/BlockContainer";
 import AuthModal from "../components/AuthModal";
 import getActiveProductsWithPrices from "../actions/getActiveProductsWithPrices";
-import getSoldBlocks from "../actions/getBlocks";
+import { getSoldBlocks } from "../actions/getBlocks";
 
 export const revalidate = 0;
 
