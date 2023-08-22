@@ -4,7 +4,7 @@ import { AiFillFacebook, AiOutlineTwitter } from "react-icons/ai";
 
 import { useUser } from "../hooks/useUser";
 import { showModal } from "./AuthModal";
-import useLoadImage from "../hooks/useLoadImage";
+import getImage from "../hooks/getImage";
 import { getBlockGroup } from "../actions/getGroup";
 
 function BlockInfo({ children }) {
@@ -20,7 +20,7 @@ function BlockInfo({ children }) {
       block.position.x == selectedBlocks[0]?.x &&
       block.position.y == selectedBlocks[0]?.y
   );
-  const imagePath = useLoadImage(selectedBlockPurchaceInfo?.image);
+  const imagePath = getImage(selectedBlockPurchaceInfo?.image);
 
   useEffect(() => {
     if (selectedBlockPurchaceInfo && selectedBlockPurchaceInfo.group_id) {

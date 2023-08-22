@@ -9,7 +9,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import BlockSideBar from "../components/BlockSidebar";
 import MenuSidebar from "../components/MenuSidebar";
 
-import useLoadImage from "../hooks/useLoadImage";
+import getImage from "../hooks/getImage";
 import { getUserBlocks } from "../actions/getBlocks";
 import { useUser } from "../hooks/useUser";
 
@@ -175,7 +175,7 @@ function PixelContainer({ children }) {
                           const currentBlockId = j * 100 + i + 1;
                           let imagePath;
                           if (soldBlocks[currentBlockId]) {
-                            imagePath = useLoadImage(
+                            imagePath = getImage(
                               soldBlocks[currentBlockId]?.image
                             );
                           }
