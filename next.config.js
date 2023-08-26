@@ -11,6 +11,13 @@ const nextConfig = {
       "kiatgcrzkstwssoqhyuc.supabase.co",
     ],
   },
+  webpack(config) {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    };
+    return config;
+  },
 };
 
 module.exports = nextConfig;
