@@ -4,7 +4,7 @@ import { AiFillFacebook, AiOutlineTwitter } from "react-icons/ai";
 
 import { useUser } from "../hooks/useUser";
 import { showModal } from "./AuthModal";
-import getImage from "../hooks/getImage";
+import useLoadImage from "../hooks/useLoadImage";
 import { getBlockGroup } from "../actions/getGroup";
 
 function BlockInfo({ children }) {
@@ -20,7 +20,7 @@ function BlockInfo({ children }) {
       block.position.x == selectedBlocks[0]?.x &&
       block.position.y == selectedBlocks[0]?.y
   );
-  const imagePath = getImage(selectedBlockPurchaceInfo?.image);
+  const imagePath = useLoadImage(selectedBlockPurchaceInfo?.image);
 
   useEffect(() => {
     if (selectedBlockPurchaceInfo && selectedBlockPurchaceInfo.group_id) {
@@ -30,9 +30,7 @@ function BlockInfo({ children }) {
         setGroupLoading(false);
       });
       let selectedGroupBlocks = soldBlocks[0].filter(
-        (block) =>
-          block?.group_id == selectedBlockPurchaceInfo?.group_id &&
-          selectedBlocks[0].x
+        (block) => block?.group_id == selectedBlockPurchaceInfo?.group_id
       );
       selectedGroupBlocks = selectedGroupBlocks.map((block) => {
         return block.position;
@@ -111,7 +109,6 @@ function BlockInfo({ children }) {
                     : "https://" + groupData.link
                 }
               >
-                {/* <AiFillFacebook size={30} /> */}
                 {groupData.link}
               </a>
             </div>

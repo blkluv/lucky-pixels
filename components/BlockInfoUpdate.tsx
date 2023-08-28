@@ -88,15 +88,18 @@ function BlockInfoInput({ children }) {
           img.width / updateXAmount < img.height / updateYAmount ? "x" : "y";
         let lineXArray = [];
         let lineYArray = [];
+        let sliceSize;
         if (short == "x") {
-          for (let x = 1; x < updateXAmount; x++)
-            lineXArray.push(+((img.width / updateXAmount) * x).toFixed(2));
-          for (let y = 1; y < updateYAmount; y++)
+          sliceSize = img.width / updateXAmount;
+          for (let x = 1; x <= updateXAmount; x++)
+            lineXArray.push(+(sliceSize * x).toFixed(2));
+          for (let y = 1; y <= updateYAmount + 1; y++)
             lineYArray.push(lineXArray[0] * y);
         } else {
-          for (let y = 1; y < updateYAmount; y++)
-            lineYArray.push(+((img.height / updateYAmount) * y).toFixed(2));
-          for (let x = 1; x < updateXAmount; x++)
+          sliceSize = img.height / updateYAmount;
+          for (let y = 1; y <= updateYAmount; y++)
+            lineYArray.push(+(sliceSize * y).toFixed(2));
+          for (let x = 1; x <= updateXAmount + 1; x++)
             lineXArray.push(lineYArray[0] * x);
         }
         console.log(lineXArray, lineYArray);
@@ -110,7 +113,12 @@ function BlockInfoInput({ children }) {
             },
             function (res) {
               console.log(res);
-              setSlicedImages(res.map((data) => data.dataURI));
+              let tempArray = [];
+              res.forEach((img, i) => {
+                if ((i + 1) % updateYAmount != 0) tempArray.push(img.dataURI);
+              });
+              // setSlicedImages(res.map((data) => data.dataURI));
+              setSlicedImages(tempArray);
             }
           );
         else setSlicedImages([img.src]);
@@ -273,10 +281,10 @@ function BlockInfoInput({ children }) {
           return (
             <div key={x} className="flex">
               {[...Array(updateXAmount)].map((b, y) => {
-                const imgPath = slicedImages[x * updateYAmount + y];
+                const imgPath = slicedImages[x * updateXAmount + y];
                 return (
                   <div
-                    key={x * updateYAmount + y}
+                    key={x * updateXAmount + y}
                     className={`relative flex items-center justify-center`}
                     style={{ height: 25, width: 25, margin: 0 }}
                   >
@@ -294,6 +302,20 @@ function BlockInfoInput({ children }) {
             </div>
           );
         })}
+      <div className="flex flex-row">
+        {slicedImages.length > 0 &&
+          slicedImages.map((img, i) => {
+            return (
+              <div
+                key={i}
+                className={`relative flex flex-row items-center justify-center`}
+                style={{ height: 25, width: 25, margin: 0 }}
+              >
+                <NextImage src={img} fill quality={20} alt="Pixel picture" />
+              </div>
+            );
+          })}
+      </div>
     </div>
   );
 }

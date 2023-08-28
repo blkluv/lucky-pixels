@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -9,9 +8,9 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import BlockSideBar from "../components/BlockSidebar";
 import MenuSidebar from "../components/MenuSidebar";
 
-import getImage from "../hooks/getImage";
 import { getUserBlocks } from "../actions/getBlocks";
 import { useUser } from "../hooks/useUser";
+import BlockItem from "./BlockItem";
 
 function PixelContainer({ children }) {
   const [soldBlocks, products] = children;
@@ -156,7 +155,7 @@ function PixelContainer({ children }) {
     }
   }, []);
 
-  async function blockInfo(x, y) {
+  async function setBlockInfo(x, y) {
     setSelectedBlocks([{ x: x + 1, y: y + 1 }]);
   }
 
@@ -172,36 +171,14 @@ function PixelContainer({ children }) {
                     return (
                       <div key={i}>
                         {[...Array(100)].map((y, j) => {
-                          const currentBlockId = j * 100 + i + 1;
-                          let imagePath;
-                          if (soldBlocks[currentBlockId]) {
-                            imagePath = getImage(
-                              soldBlocks[currentBlockId]?.image
-                            );
-                          }
                           return (
-                            <div
-                              id={"block " + (i + 1) + ", " + (j + 1)}
+                            <BlockItem
+                              soldBlocks={soldBlocks}
+                              setBlockInfo={setBlockInfo}
+                              i={i}
+                              j={j}
                               key={j}
-                              className={`relative bg-white ${
-                                soldBlocks[currentBlockId]
-                                  ? "opacity-80"
-                                  : "opacity-50"
-                              } hover:opacity-100`}
-                              style={{ height: 5, width: 5 }}
-                              onClick={() => blockInfo(j, i)}
-                            >
-                              {imagePath && (
-                                <Image
-                                  src={imagePath}
-                                  placeholder="blur"
-                                  blurDataURL={encodeURIComponent(imagePath)}
-                                  fill
-                                  quality={20}
-                                  alt="Pixel picture"
-                                />
-                              )}
-                            </div>
+                            />
                           );
                         })}
                       </div>
