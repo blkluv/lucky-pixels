@@ -19,6 +19,7 @@ function BlockInfoInput({ children }) {
   const [updateYAmount, setUpdateYAmount] = useState(1);
   const [loading, setLoading] = useState<boolean>();
   const [slicedImages, setSlicedImages] = useState([]);
+  const [rowSlicedImages, setRowSlicedImages] = useState([]);
 
   const lastXAmount = useRef(updateXAmount);
   const lastYAmount = useRef(updateYAmount);
@@ -77,51 +78,138 @@ function BlockInfoInput({ children }) {
     }
   }, [updateXAmount, updateYAmount]);
 
+  // function handleImg(data) {
+  //   if (data.target.files[0]) {
+  //     const img = new Image();
+  //     img.src = URL.createObjectURL(data.target.files[0]);
+  //     let shortDirection;
+  //     img.onload = () => {
+  //       console.log(img.width, img.height);
+  //       shortDirection =
+  //         img.width / updateXAmount < img.height / updateYAmount ? "x" : "y";
+  //       let lineXArray = [];
+  //       let lineYArray = [];
+  //       let sliceSize;
+  // if (shortDirection == "x") {
+  //   sliceSize = Math.floor(img.width / updateXAmount);
+  //   for (let x = 1; x <= updateXAmount; x++)
+  //     lineXArray.push(+(sliceSize * x).toFixed(2));
+  //   for (let y = 1; y <= updateYAmount; y++)
+  //     lineYArray.push(lineXArray[0] * y);
+  // } else {
+  //   sliceSize = Math.floor(img.height / updateYAmount);
+  //   for (let y = 1; y <= updateYAmount; y++)
+  //     lineYArray.push(+(sliceSize * y).toFixed(2));
+  //   for (let x = 1; x <= updateXAmount; x++)
+  //     lineXArray.push(lineYArray[0] * x);
+  // }
+  //       console.log(lineXArray, lineYArray);
+  //       if (lineXArray.length > 0 || lineYArray.length > 0)
+  //         imageToSlices(
+  //           img.src,
+  //           lineXArray,
+  //           lineYArray,
+  //           {
+  //             saveToDataUrl: true,
+  //           },
+  //           function (res) {
+  //             console.log(res.length);
+  //             setRowSlicedImages(res.map((img) => img.dataURI));
+  //             let correctSlices = [];
+  //             let lastSlices = [];
+  //             res.forEach((slice, i) => {
+  //               // if (
+  //               // slice.x % lineXArray[0] == 0 &&
+  //               // slice.y % lineXArray[0] == 0
+  //               // &&
+  //               //   slice.width >= lineXArray[0] &&
+  //               //   slice.height >= lineXArray[0]
+  //               // )
+  //               correctSlices.push(slice);
+  //             });
+  //             setRowSlicedImages(correctSlices.map((img) => img.dataURI));
+  //             console.log(correctSlices);
+  //             correctSlices.forEach((img, i) => {
+  //               if (
+  //                 img.x <= lineXArray[lineXArray.length - 1] &&
+  //                 img.y <= lineYArray[lineYArray.length - 1]
+  //               )
+  //                 lastSlices.push(img.dataURI);
+  //             });
+  //             setSlicedImages(lastSlices);
+  //           }
+  //         );
+  //       else setSlicedImages([img.src]);
+  //     };
+  //   }
+  // }
   function handleImg(data) {
     if (data.target.files[0]) {
-      const img = new Image();
-      img.src = URL.createObjectURL(data.target.files[0]);
-      let short;
-      img.onload = () => {
-        console.log(img.width, img.height);
-        short =
-          img.width / updateXAmount < img.height / updateYAmount ? "x" : "y";
-        let lineXArray = [];
-        let lineYArray = [];
-        let sliceSize;
-        if (short == "x") {
-          sliceSize = img.width / updateXAmount;
-          for (let x = 1; x <= updateXAmount; x++)
-            lineXArray.push(+(sliceSize * x).toFixed(2));
-          for (let y = 1; y <= updateYAmount + 1; y++)
-            lineYArray.push(lineXArray[0] * y);
-        } else {
-          sliceSize = img.height / updateYAmount;
-          for (let y = 1; y <= updateYAmount; y++)
-            lineYArray.push(+(sliceSize * y).toFixed(2));
-          for (let x = 1; x <= updateXAmount + 1; x++)
-            lineXArray.push(lineYArray[0] * x);
-        }
-        console.log(lineXArray, lineYArray);
-        if (lineXArray.length > 0 || lineYArray.length > 0)
-          imageToSlices(
-            img.src,
-            lineXArray,
-            lineYArray,
-            {
-              saveToDataUrl: true,
-            },
-            function (res) {
-              console.log(res);
-              let tempArray = [];
-              res.forEach((img, i) => {
-                if ((i + 1) % updateYAmount != 0) tempArray.push(img.dataURI);
-              });
-              // setSlicedImages(res.map((data) => data.dataURI));
-              setSlicedImages(tempArray);
-            }
-          );
-        else setSlicedImages([img.src]);
+      const ratioImage = new Image();
+      ratioImage.src = URL.createObjectURL(data.target.files[0]);
+      ratioImage.onload = () => {
+        let sliceSize =
+          ratioImage.width / updateXAmount < ratioImage.height / updateYAmount
+            ? Math.floor(ratioImage.width / updateXAmount)
+            : Math.floor(ratioImage.height / updateYAmount);
+
+        console.log(ratioImage.width, ratioImage.height);
+        console.log([sliceSize * updateXAmount], [sliceSize * updateYAmount]);
+
+        imageToSlices(
+          ratioImage.src,
+          [sliceSize * updateXAmount],
+          [sliceSize * updateYAmount],
+          {
+            saveToDataUrl: true,
+          },
+          function (res) {
+            setRowSlicedImages(res);
+            const img = new Image();
+            img.src = res[0].dataURI;
+
+            img.onload = () => {
+              console.log(img.width, img.height);
+              let lineXArray = [];
+              let lineYArray = [];
+              let shortDirection =
+                img.width / updateXAmount < img.height / updateYAmount
+                  ? "x"
+                  : "y";
+
+              if (shortDirection == "x") {
+                sliceSize = Math.floor(img.width / updateXAmount);
+                for (let x = 1; x < updateXAmount; x++)
+                  lineXArray.push(+(sliceSize * x).toFixed(2));
+                for (let y = 1; y < updateYAmount; y++)
+                  lineYArray.push(lineXArray[0] * y);
+              } else {
+                sliceSize = Math.floor(img.height / updateYAmount);
+                for (let y = 1; y < updateYAmount; y++)
+                  lineYArray.push(+(sliceSize * y).toFixed(2));
+                for (let x = 1; x < updateXAmount; x++)
+                  lineXArray.push(lineYArray[0] * x);
+              }
+
+              console.log(lineXArray, lineYArray);
+
+              imageToSlices(
+                img.src,
+                lineXArray,
+                lineYArray,
+                {
+                  saveToDataUrl: true,
+                },
+                function (res) {
+                  console.log(res.length);
+                  console.log(res);
+                  setRowSlicedImages(res);
+                  setSlicedImages(res);
+                }
+              );
+            };
+          }
+        );
       };
     }
   }
@@ -286,11 +374,11 @@ function BlockInfoInput({ children }) {
                   <div
                     key={x * updateXAmount + y}
                     className={`relative flex items-center justify-center`}
-                    style={{ height: 25, width: 25, margin: 0 }}
+                    style={{ height: 25, width: 25, margin: 1 }}
                   >
                     {imgPath && (
                       <NextImage
-                        src={imgPath}
+                        src={imgPath.dataURI}
                         fill
                         quality={20}
                         alt="Pixel picture"
@@ -302,20 +390,40 @@ function BlockInfoInput({ children }) {
             </div>
           );
         })}
-      <div className="flex flex-row">
-        {slicedImages.length > 0 &&
-          slicedImages.map((img, i) => {
+
+      {rowSlicedImages.length > 0 && (
+        <div
+          className={`relative flex flex-row items-center justify-center`}
+          style={{ height: 25, width: 25, margin: 0 }}
+        >
+          <NextImage
+            src={rowSlicedImages[0].dataURI}
+            fill
+            style={{ objectFit: "contain" }}
+            quality={20}
+            alt="Pixel picture"
+          />
+        </div>
+      )}
+      {/* <div className="flex flex-row">
+        {rowSlicedImages.length > 0 &&
+          rowSlicedImages.map((img, i) => {
             return (
               <div
                 key={i}
                 className={`relative flex flex-row items-center justify-center`}
                 style={{ height: 25, width: 25, margin: 0 }}
               >
-                <NextImage src={img} fill quality={20} alt="Pixel picture" />
+                <NextImage
+                  src={img.dataURI}
+                  fill
+                  quality={20}
+                  alt="Pixel picture"
+                />
               </div>
             );
           })}
-      </div>
+      </div> */}
     </div>
   );
 }
