@@ -327,7 +327,7 @@ function BlockInfoInput({ children }) {
             <span className="loading loading-spinner loading-md"></span>
           ) : (
             <>
-              "PREVIEW IMAGE"
+              PREVIEW IMAGE
               <BsFillEyeFill size={25} />
             </>
           )}
