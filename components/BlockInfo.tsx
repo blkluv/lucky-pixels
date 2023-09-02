@@ -20,7 +20,7 @@ function BlockInfo({ children }) {
       block.position.x == selectedBlocks[0]?.x &&
       block.position.y == selectedBlocks[0]?.y
   );
-  const imagePath = useLoadImage(selectedBlockPurchaceInfo?.image);
+  const imagePath = useLoadImage(groupData?.image);
 
   useEffect(() => {
     if (selectedBlockPurchaceInfo && selectedBlockPurchaceInfo.group_id) {
@@ -65,8 +65,6 @@ function BlockInfo({ children }) {
             fill
             alt="Pixel picture"
             style={{ objectFit: "contain" }}
-            placeholder="blur"
-            blurDataURL={encodeURIComponent(imagePath) ?? "/favicon.ico"}
           />
         </figure>
         <div className="card-body">

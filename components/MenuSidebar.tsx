@@ -2,7 +2,7 @@ function MenuSidebar() {
   return (
     <div className={`drawer absolute`}>
       <input id="menu-drawer" type="checkbox" className="drawer-toggle" />
-      <div className={`drawer-content p-5`}>
+      <div className={`drawer-content absolute p-5`}>
         <label htmlFor="menu-drawer" className="drawer-button btn">
           Menu
         </label>

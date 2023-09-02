@@ -7,10 +7,12 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/navigation";
 import uniqid from "uniqid";
 import imageToSlices from "image-to-slices";
-import { default as NextImage } from "next/image";
+import { BsFillEyeFill } from "react-icons/bs";
 
 import { useUser } from "../hooks/useUser";
+import ImagePreviewModal from "../components/ImagePreviewModal";
 
+let handleImgType;
 function BlockInfoInput({ children }) {
   const [selectedBlocks, setSelectedBlocks, setSidebarState, userBlocks] =
     children;
@@ -18,8 +20,8 @@ function BlockInfoInput({ children }) {
   const [updateXAmount, setUpdateXAmount] = useState(1);
   const [updateYAmount, setUpdateYAmount] = useState(1);
   const [loading, setLoading] = useState<boolean>();
-  const [slicedImages, setSlicedImages] = useState([]);
-  const [rowSlicedImages, setRowSlicedImages] = useState([]);
+  const [isPreview, setIsPreview] = useState(false);
+  const [slicedImages, setSlicedImages] = useState<any>();
 
   const lastXAmount = useRef(updateXAmount);
   const lastYAmount = useRef(updateYAmount);
@@ -27,10 +29,32 @@ function BlockInfoInput({ children }) {
   const supabaseClient = useSupabaseClient();
   const { user } = useUser();
   const router = useRouter();
-  let blockArray = [];
-  let imgSlice = [];
 
-  const { register, handleSubmit, reset } = useForm<FieldValues>({
+  function dataURItoBlob(dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    var byteString = atob(dataURI.split(",")[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+
+    // create a view into the buffer
+    var ia = new Uint8Array(ab);
+
+    // set the bytes of the buffer to the correct values
+    for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    var blob = new Blob([ab], { type: mimeString });
+    return blob;
+  }
+
+  const { register, handleSubmit, reset, getValues } = useForm<FieldValues>({
     defaultValues: {
       title: "",
       description: "",
@@ -38,7 +62,7 @@ function BlockInfoInput({ children }) {
       image: null,
     },
   });
-
+  ``;
   function changeAmount(direction, amount) {
     if (amount > 0) {
       if (direction === "x" && selectedBlocks[0].y + amount - 1 <= 100) {
@@ -52,6 +76,7 @@ function BlockInfoInput({ children }) {
 
   useEffect(() => {
     if (updateXAmount != 1 || updateYAmount != 1) {
+      let blockArray = [];
       for (let i = 0; i < updateXAmount; i++) {
         blockArray.push(
           ...[...Array(updateYAmount)].map((y, j) => {
@@ -78,210 +103,66 @@ function BlockInfoInput({ children }) {
     }
   }, [updateXAmount, updateYAmount]);
 
-  // function handleImg(data) {
-  //   if (data.target.files[0]) {
-  //     const img = new Image();
-  //     img.src = URL.createObjectURL(data.target.files[0]);
-  //     let shortDirection;
-  //     img.onload = () => {
-  //       console.log(img.width, img.height);
-  //       shortDirection =
-  //         img.width / updateXAmount < img.height / updateYAmount ? "x" : "y";
-  //       let lineXArray = [];
-  //       let lineYArray = [];
-  //       let sliceSize;
-  // if (shortDirection == "x") {
-  //   sliceSize = Math.floor(img.width / updateXAmount);
-  //   for (let x = 1; x <= updateXAmount; x++)
-  //     lineXArray.push(+(sliceSize * x).toFixed(2));
-  //   for (let y = 1; y <= updateYAmount; y++)
-  //     lineYArray.push(lineXArray[0] * y);
-  // } else {
-  //   sliceSize = Math.floor(img.height / updateYAmount);
-  //   for (let y = 1; y <= updateYAmount; y++)
-  //     lineYArray.push(+(sliceSize * y).toFixed(2));
-  //   for (let x = 1; x <= updateXAmount; x++)
-  //     lineXArray.push(lineYArray[0] * x);
-  // }
-  //       console.log(lineXArray, lineYArray);
-  //       if (lineXArray.length > 0 || lineYArray.length > 0)
-  //         imageToSlices(
-  //           img.src,
-  //           lineXArray,
-  //           lineYArray,
-  //           {
-  //             saveToDataUrl: true,
-  //           },
-  //           function (res) {
-  //             console.log(res.length);
-  //             setRowSlicedImages(res.map((img) => img.dataURI));
-  //             let correctSlices = [];
-  //             let lastSlices = [];
-  //             res.forEach((slice, i) => {
-  //               // if (
-  //               // slice.x % lineXArray[0] == 0 &&
-  //               // slice.y % lineXArray[0] == 0
-  //               // &&
-  //               //   slice.width >= lineXArray[0] &&
-  //               //   slice.height >= lineXArray[0]
-  //               // )
-  //               correctSlices.push(slice);
-  //             });
-  //             setRowSlicedImages(correctSlices.map((img) => img.dataURI));
-  //             console.log(correctSlices);
-  //             correctSlices.forEach((img, i) => {
-  //               if (
-  //                 img.x <= lineXArray[lineXArray.length - 1] &&
-  //                 img.y <= lineYArray[lineYArray.length - 1]
-  //               )
-  //                 lastSlices.push(img.dataURI);
-  //             });
-  //             setSlicedImages(lastSlices);
-  //           }
-  //         );
-  //       else setSlicedImages([img.src]);
-  //     };
-  //   }
-  // }
-  function handleImg(data) {
-    if (data.target.files[0]) {
-      const ratioImage = new Image();
-      ratioImage.src = URL.createObjectURL(data.target.files[0]);
-      ratioImage.onload = () => {
-        let sliceSize =
-          ratioImage.width / updateXAmount < ratioImage.height / updateYAmount
-            ? Math.floor(ratioImage.width / updateXAmount)
-            : Math.floor(ratioImage.height / updateYAmount);
-
-        console.log(ratioImage.width, ratioImage.height);
-        console.log([sliceSize * updateXAmount], [sliceSize * updateYAmount]);
-
-        imageToSlices(
-          ratioImage.src,
-          [sliceSize * updateXAmount],
-          [sliceSize * updateYAmount],
-          {
-            saveToDataUrl: true,
-          },
-          function (res) {
-            setRowSlicedImages(res);
-            const img = new Image();
-            img.src = res[0].dataURI;
-
-            img.onload = () => {
-              console.log(img.width, img.height);
-              let lineXArray = [];
-              let lineYArray = [];
-              let shortDirection =
-                img.width / updateXAmount < img.height / updateYAmount
-                  ? "x"
-                  : "y";
-
-              if (shortDirection == "x") {
-                sliceSize = Math.floor(img.width / updateXAmount);
-                for (let x = 1; x < updateXAmount; x++)
-                  lineXArray.push(+(sliceSize * x).toFixed(2));
-                for (let y = 1; y < updateYAmount; y++)
-                  lineYArray.push(lineXArray[0] * y);
-              } else {
-                sliceSize = Math.floor(img.height / updateYAmount);
-                for (let y = 1; y < updateYAmount; y++)
-                  lineYArray.push(+(sliceSize * y).toFixed(2));
-                for (let x = 1; x < updateXAmount; x++)
-                  lineXArray.push(lineYArray[0] * x);
-              }
-
-              console.log(lineXArray, lineYArray);
-
-              imageToSlices(
-                img.src,
-                lineXArray,
-                lineYArray,
-                {
-                  saveToDataUrl: true,
-                },
-                function (res) {
-                  console.log(res.length);
-                  console.log(res);
-                  setRowSlicedImages(res);
-                  setSlicedImages(res);
-                }
-              );
-            };
-          }
-        );
-      };
+  useEffect(() => {
+    if (slicedImages?.length > 0) {
+      if (handleImgType === "preview") setIsPreview(true);
+      if (handleImgType === "upload") {
+        console.log(slicedImages);
+        uploadImage();
+      }
     }
-  }
+  }, [slicedImages]);
 
-  const onSubmit: SubmitHandler<FieldValues> = async (values) => {
+  async function uploadImage() {
     try {
       setLoading(true);
-      const imageFile = values.image?.[0];
-      console.log(imageFile);
+      const values = getValues();
+      const uniqueID = uniqid();
+      const fullImageFile = values.image?.[0];
+      //Upload full image
+      const { data: imageData } = await supabaseClient.storage
+        .from("images")
+        .upload(`full-image-${values.title}-${uniqueID}`, fullImageFile, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+      // Create group
+      const { data: groupData } = await supabaseClient
+        .from("block_groups")
+        .insert({
+          title: values.title,
+          desc: values.description,
+          image: imageData.path,
+          link: values.link,
+        })
+        .select();
+      // Update sliced images and update block
+      let sortedArray = selectedBlocks.sort((a, b) => a.x - b.x);
+      sortedArray.forEach(async (block, index) => {
+        const uuid = uniqid();
+        const updateId: number = (block.x - 1) * 100 + block.y;
 
-      if (!imageFile || !user) {
-        toast.error("Missing fields");
-        return;
-      }
-      const img = new Image();
-      img.src = URL.createObjectURL(imageFile);
-      img.onload = () => {
-        console.log(img.height);
-      };
+        const blobImage = dataURItoBlob(slicedImages[index]);
 
-      // const uniqueID = uniqid();
+        const { data: sliceData } = await supabaseClient.storage
+          .from("images")
+          .upload(`block-image-${values.title}-${uuid}`, blobImage, {
+            cacheControl: "3600",
+            upsert: false,
+          });
 
-      // Upload image
-      // const { data: imageData, error: imageError } =
-      //   await supabaseClient.storage
-      //     .from("images")
-      //     .upload(`image-${values.title}-${uniqueID}`, imageFile, {
-      //       cacheControl: "3600",
-      //       upsert: false,
-      //     });
-      // if (imageError) {
-      //   setLoading(false);
-      //   console.log(imageError);
-      //   return toast.error("Failed image upload");
-      // }
-
-      // // Create group
-      // const { data: groupData, error: groupError } = await supabaseClient
-      //   .from("block_groups")
-      //   .insert({
-      //     title: values.title,
-      //     desc: values.description,
-      //     image: imageData.path,
-      //     link: values.link,
-      //   })
-      //   .select();
-      // if (groupError) {
-      //   console.log(groupError);
-      //   return toast.error(groupError.message);
-      // }
-
-      // // Select selected block groupID
-      // // const { data: selectedBlockData } = await supabaseClient
-      // //   .from("blocks")
-      // //   .select("*")
-      // //   .eq("id", (selectedBlocks[0].x - 1) * 100 + selectedBlocks[0].y);
-
-      // // Update block
-      // selectedBlocks.forEach(async (block) => {
-      //   const updateId: number = (block.x - 1) * 100 + block.y;
-      //   await supabaseClient
-      //     .from("blocks")
-      //     .update({
-      //       image: imageData.path,
-      //       group_id: groupData[0].id,
-      //     })
-      //     .eq("id", updateId);
-      // });
-      // setLoading(false);
-      // toast.success("Block updated!");
-      // reset();
-      // router.refresh();
+        await supabaseClient
+          .from("blocks")
+          .update({
+            image: sliceData.path,
+            group_id: groupData[0].id,
+          })
+          .eq("id", updateId);
+      });
+      setLoading(false);
+      toast.success("Block updated!");
+      reset();
+      router.refresh();
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -289,6 +170,89 @@ function BlockInfoInput({ children }) {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleImg(type: any, imageFile: any) {
+    setLoading(true);
+    handleImgType = type;
+    const values = imageFile ?? getValues()?.image;
+    if (values?.length > 0) {
+      const uploadedImage = new Image();
+      uploadedImage.src = URL.createObjectURL(values[0]);
+      uploadedImage.onload = () => {
+        let sliceSize =
+          uploadedImage.width / updateXAmount <
+          uploadedImage.height / updateYAmount
+            ? Math.floor(uploadedImage.width / updateXAmount)
+            : Math.floor(uploadedImage.height / updateYAmount);
+
+        imageToSlices(
+          uploadedImage.src,
+          [sliceSize * updateYAmount],
+          [sliceSize * updateXAmount],
+          {
+            saveToDataUrl: true,
+          },
+          function (firstSlice) {
+            if (updateXAmount > 1 || updateYAmount > 1) {
+              const img = new Image();
+              img.src = firstSlice[0].dataURI;
+              img.onload = () => {
+                let lineXArray = [];
+                let lineYArray = [];
+                let shortDirection =
+                  img.width / updateXAmount < img.height / updateYAmount
+                    ? "x"
+                    : "y";
+                if (shortDirection == "x") {
+                  sliceSize = Math.floor(img.width / updateXAmount);
+                  for (let x = 1; x < updateXAmount; x++)
+                    lineXArray.push(+(sliceSize * x).toFixed(2));
+                  for (let y = 1; y < updateYAmount; y++)
+                    lineYArray.push(+(sliceSize * y).toFixed(2));
+                } else {
+                  sliceSize = Math.floor(img.height / updateYAmount);
+                  for (let y = 1; y < updateYAmount; y++)
+                    lineYArray.push(+(sliceSize * y).toFixed(2));
+                  for (let x = 1; x < updateXAmount; x++)
+                    lineXArray.push(+(sliceSize * x).toFixed(2));
+                }
+                imageToSlices(
+                  img.src,
+                  lineYArray,
+                  lineXArray,
+                  {
+                    saveToDataUrl: true,
+                  },
+                  function (secondSliceRes) {
+                    const imgSlices = secondSliceRes.map(
+                      (slice) => slice.dataURI
+                    );
+                    setSlicedImages(imgSlices);
+                    setLoading(false);
+                    return imgSlices;
+                  }
+                );
+              };
+            } else {
+              const imgSlices = [firstSlice[0].dataURI];
+              setSlicedImages(imgSlices);
+              setLoading(false);
+              return imgSlices;
+            }
+          }
+        );
+      };
+    } else toast("No image uploaded");
+  }
+
+  const onSubmit: SubmitHandler<FieldValues> = async (values) => {
+    const imageFile = values.image;
+    if (!imageFile || !user) {
+      toast.error("Missing fields");
+      return;
+    }
+    handleImg("upload", imageFile);
   };
 
   return (
@@ -353,10 +317,23 @@ function BlockInfoInput({ children }) {
           id="image"
           accept="image/*"
           {...register("image", { required: true })}
-          onChange={handleImg}
         />
+        <button
+          className="border-1 btn mt-5 border-current p-3 px-10"
+          onClick={() => handleImg("preview", null)}
+          type="button"
+        >
+          {loading ? (
+            <span className="loading loading-spinner loading-md"></span>
+          ) : (
+            <>
+              "PREVIEW IMAGE"
+              <BsFillEyeFill size={25} />
+            </>
+          )}
+        </button>
 
-        <button className="btn-neutral btn my-5 p-3 px-10" type="submit">
+        <button className="btn-neutral btn  p-3 px-10" type="submit">
           {loading ? (
             <span className="loading loading-spinner loading-md"></span>
           ) : (
@@ -364,66 +341,14 @@ function BlockInfoInput({ children }) {
           )}
         </button>
       </form>
-      {slicedImages.length > 0 &&
-        [...Array(updateYAmount)].map((a, x) => {
-          return (
-            <div key={x} className="flex">
-              {[...Array(updateXAmount)].map((b, y) => {
-                const imgPath = slicedImages[x * updateXAmount + y];
-                return (
-                  <div
-                    key={x * updateXAmount + y}
-                    className={`relative flex items-center justify-center`}
-                    style={{ height: 25, width: 25, margin: 1 }}
-                  >
-                    {imgPath && (
-                      <NextImage
-                        src={imgPath.dataURI}
-                        fill
-                        quality={20}
-                        alt="Pixel picture"
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
-
-      {rowSlicedImages.length > 0 && (
-        <div
-          className={`relative flex flex-row items-center justify-center`}
-          style={{ height: 25, width: 25, margin: 0 }}
-        >
-          <NextImage
-            src={rowSlicedImages[0].dataURI}
-            fill
-            style={{ objectFit: "contain" }}
-            quality={20}
-            alt="Pixel picture"
-          />
-        </div>
+      {isPreview && (
+        <ImagePreviewModal
+          slicedImages={slicedImages}
+          amountX={updateXAmount}
+          amountY={updateYAmount}
+          setIsPreview={setIsPreview}
+        />
       )}
-      {/* <div className="flex flex-row">
-        {rowSlicedImages.length > 0 &&
-          rowSlicedImages.map((img, i) => {
-            return (
-              <div
-                key={i}
-                className={`relative flex flex-row items-center justify-center`}
-                style={{ height: 25, width: 25, margin: 0 }}
-              >
-                <NextImage
-                  src={img.dataURI}
-                  fill
-                  quality={20}
-                  alt="Pixel picture"
-                />
-              </div>
-            );
-          })}
-      </div> */}
     </div>
   );
 }
