@@ -3,6 +3,7 @@ import SupabaseProvider from "../providers/SupabaseProvider";
 import UserProvider from "../providers/UserProvider";
 import ToasterProvider from "../providers/ToastProviders";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/react";
 
 const myFont = localFont({ src: "../public/Akkurat-Mono.ttf" });
 
@@ -23,6 +24,7 @@ async function RootLayout({ children }: LayoutProps) {
         <SupabaseProvider>
           <UserProvider>{children}</UserProvider>
         </SupabaseProvider>
+        <Analytics />
       </body>
     </html>
   );

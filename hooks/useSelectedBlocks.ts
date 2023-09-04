@@ -14,7 +14,7 @@
 //   reset: () => void;
 // }
 
-// const useSelectedBlock = create<SelectedBlocks>((set) => ({
+// const useSelectedBlocksStore = create<SelectedBlocks>((set) => ({
 //   ids: [],
 //   activeId: undefined,
 //   setId: (id: string) => set({ activeId: id }),
@@ -22,4 +22,4 @@
 //   reset: () => set({ ids: [], activeId: undefined }),
 // }));
 
-// export default usePlayer;
+// export default useSelectedBlocksStore;
