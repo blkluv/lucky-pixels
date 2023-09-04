@@ -25,6 +25,7 @@ function BlockItem({ soldBlocks, setBlockInfo, i, j }) {
           fill
           quality={20}
           alt="Pixel picture"
+          unoptimized
         />
       )}
     </div>
