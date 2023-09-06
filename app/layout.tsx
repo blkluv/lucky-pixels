@@ -12,9 +12,9 @@ export const metadata = {
   description: "Get a piece of the internet",
 };
 
-interface LayoutProps {
+type LayoutProps = {
   children: React.ReactNode;
-}
+};
 
 async function RootLayout({ children }: LayoutProps) {
   return (

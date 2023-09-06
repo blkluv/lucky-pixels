@@ -1,12 +1,12 @@
 import Stripe from "stripe";
 import { Database, Json } from "./types_db";
 
-interface Position {
+type Position = {
   x: number;
   y: number;
-}
+};
 
-export interface Payment {
+export type Payment = {
   amount: number;
   amount_received: number | null;
   checkout_status: Database["public"]["Enums"]["checkout_status"] | null;
@@ -15,9 +15,9 @@ export interface Payment {
   metadata: Json | null;
   payment_status: Database["public"]["Enums"]["payment_status"] | null;
   user_id: string;
-}
+};
 
-export interface Block {
+export type Block = {
   created_at: string | null;
   id: number;
   image_url: string | null;
@@ -25,24 +25,24 @@ export interface Block {
   payment_status: Database["public"]["Enums"]["payment_status"] | null;
   position: Position | null;
   user_id: string | null;
-}
+};
 
-export interface Image {
+export type Image = {
   id: string;
   created_at: string;
   image_link: string;
-}
+};
 
-export interface Product {
+export type Product = {
   id: string;
   active?: boolean;
   name?: string;
   description?: string;
   image?: string;
   metadata?: Stripe.Metadata;
-}
+};
 
-export interface Price {
+export type Price = {
   id: string;
   product_id?: string;
   active?: boolean;
@@ -55,14 +55,14 @@ export interface Price {
   trial_period_days?: number | null;
   metadata?: Stripe.Metadata;
   products?: Product;
-}
+};
 
-export interface Customer {
+export type Customer = {
   id: string;
   stripe_customer_id?: string;
-}
+};
 
-export interface UserDetails {
+export type UserDetails = {
   id: string;
   first_name: string;
   last_name: string;
@@ -70,8 +70,8 @@ export interface UserDetails {
   avatar_url?: string;
   billing_address?: Stripe.Address;
   payment_method?: Stripe.PaymentMethod[Stripe.PaymentMethod.Type];
-}
+};
 
-export interface ProductWithPrice extends Product {
+export type ProductWithPrice = Product & {
   prices?: Price[];
-}
+};

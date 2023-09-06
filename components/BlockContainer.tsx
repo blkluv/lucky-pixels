@@ -164,7 +164,7 @@ function PixelContainer({ children }) {
       <div className="absolute">
         <TransformWrapper maxScale={5} minScale={1}>
           {() => (
-            <React.Fragment>
+            <>
               <TransformComponent>
                 <div className="flex h-screen w-screen items-center justify-center">
                   {[...Array(100)].map((x, i) => {
@@ -186,7 +186,7 @@ function PixelContainer({ children }) {
                   })}
                 </div>
               </TransformComponent>
-            </React.Fragment>
+            </>
           )}
         </TransformWrapper>
       </div>

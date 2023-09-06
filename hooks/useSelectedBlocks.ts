@@ -1,25 +1,20 @@
-// import { create } from "zustand";
+import { create } from "zustand";
 
-// interface SelectedBlock {
-//   x: number;
-//   y: number;
-//   setX: (x: string) => void;
-//   setY: (y: string) => void;
-//   reset: () => void;
-// }
+type SelectedBlock = {
+  x: number;
+  y: number;
+  setX: (x: number) => void;
+  setY: (y: number) => void;
+  reset: () => void;
+};
 
-// interface SelectedBlocks extends Array<SelectedBlock> {
-//   selectedBlock: SelectedBlock;
-//   setSelectedBlocks: (selectedBlock: SelectedBlock) => void;
-//   reset: () => void;
-// }
+type SelectedBlocks = SelectedBlock[] & {
+  setSelectedBlocks: (selectedBlock: SelectedBlock) => void;
+  reset: () => void;
+};
 
 // const useSelectedBlocksStore = create<SelectedBlocks>((set) => ({
-//   ids: [],
-//   activeId: undefined,
-//   setId: (id: string) => set({ activeId: id }),
-//   setIds: (ids: string[]) => set({ ids }),
-//   reset: () => set({ ids: [], activeId: undefined }),
+//   selectedBlocks: [],
 // }));
 
 // export default useSelectedBlocksStore;
