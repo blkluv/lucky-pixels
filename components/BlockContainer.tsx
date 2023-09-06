@@ -12,6 +12,17 @@ import { getUserBlocks } from "../actions/getBlocks";
 import { useUser } from "../hooks/useUser";
 import BlockItem from "./BlockItem";
 
+type EditBlocks = {
+  soldBlocks80: () => void;
+  lastBlocks50: () => void;
+  selectedBlocks100: () => void;
+  soldBlocksReset: () => void;
+  lastBlocksReset: () => void;
+  soldBlocks50: () => void;
+  ownedBlocks80: () => void;
+  ownedLastBlocksReset: () => void;
+};
+
 function PixelContainer({ children }) {
   const [soldBlocks, products] = children;
   const { user, isLoading, userDetails } = useUser();
@@ -29,121 +40,123 @@ function PixelContainer({ children }) {
     }
   }, []);
 
-  function soldBlocks80() {
-    soldBlocks[0]?.map((block) => {
-      var element = document.getElementById(
-        "block " + block.position.y + ", " + block.position.x
-      );
-      if (element) {
-        element.classList.remove("opacity-100");
-        element.classList.add("opacity-80");
-      }
-    });
-  }
-  function lastBlocks50() {
-    lastBlockState.current?.map((block) => {
-      if (!soldBlocks[(block.x - 1) * 100 + block.y]) {
+  const editBlocks: EditBlocks = {
+    soldBlocks80() {
+      soldBlocks[0]?.map((block) => {
+        var element = document.getElementById(
+          "block " + block.position.y + ", " + block.position.x
+        );
+        if (element) {
+          element.classList.remove("opacity-100");
+          element.classList.add("opacity-80");
+        }
+      });
+    },
+    lastBlocks50() {
+      lastBlockState.current?.map((block) => {
+        if (!soldBlocks[(block.x - 1) * 100 + block.y]) {
+          var element = document.getElementById(
+            "block " + block.y + ", " + block.x
+          );
+          if (element) {
+            element.classList.remove("opacity-100");
+            element.classList.add("opacity-50");
+          }
+        }
+      });
+    },
+    selectedBlocks100() {
+      selectedBlocks.map((block) => {
         var element = document.getElementById(
           "block " + block.y + ", " + block.x
         );
         if (element) {
-          element.classList.remove("opacity-100");
-          element.classList.add("opacity-50");
+          element.classList.remove("opacity-50");
+          element.classList.remove("opacity-80");
+          element.classList.add("opacity-100");
         }
-      }
-    });
-  }
-  function selectedBlocks100() {
-    selectedBlocks.map((block) => {
-      var element = document.getElementById(
-        "block " + block.y + ", " + block.x
-      );
-      if (element) {
-        element.classList.remove("opacity-50");
-        element.classList.remove("opacity-80");
-        element.classList.add("opacity-100");
-      }
-    });
-  }
-  function soldBlocksReset() {
-    soldBlocks[0]?.map((block) => {
-      var element = document.getElementById(
-        "block " + block.position.y + ", " + block.position.x
-      );
-      if (element) {
-        element.classList.remove("opacity-50");
-        element.classList.remove("opacity-80");
-        element.classList.add("opacity-100");
-      }
-    });
-  }
-  function lastBlocksReset() {
-    lastBlockState.current?.map((block) => {
-      if (!soldBlocks[(block.x - 1) * 100 + block.y]) {
+      });
+    },
+    soldBlocksReset() {
+      soldBlocks[0]?.map((block) => {
         var element = document.getElementById(
-          "block " + block.y + ", " + block.x
+          "block " + block.position.y + ", " + block.position.x
+        );
+        if (element) {
+          element.classList.remove("opacity-50");
+          element.classList.remove("opacity-80");
+          element.classList.add("opacity-100");
+        }
+      });
+    },
+    lastBlocksReset() {
+      lastBlockState.current?.map((block) => {
+        if (!soldBlocks[(block.x - 1) * 100 + block.y]) {
+          var element = document.getElementById(
+            "block " + block.y + ", " + block.x
+          );
+          if (element) {
+            element.classList.remove("opacity-100");
+            element.classList.add("opacity-50");
+          }
+        }
+      });
+    },
+    soldBlocks50() {
+      soldBlocks[0]?.map((block) => {
+        var element = document.getElementById(
+          "block " + block.position.y + ", " + block.position.x
         );
         if (element) {
           element.classList.remove("opacity-100");
+          element.classList.remove("opacity-80");
           element.classList.add("opacity-50");
         }
-      }
-    });
-  }
-  function soldBlocks50() {
-    soldBlocks[0]?.map((block) => {
-      var element = document.getElementById(
-        "block " + block.position.y + ", " + block.position.x
-      );
-      if (element) {
-        element.classList.remove("opacity-100");
-        element.classList.remove("opacity-80");
-        element.classList.add("opacity-50");
-      }
-    });
-  }
-  function ownedBlocks80() {
-    userBlocks[0]?.map((block) => {
-      var element = document.getElementById(
-        "block " + block.position.y + ", " + block.position.x
-      );
-      if (element) {
-        element.classList.remove("opacity-100");
-        element.classList.remove("opacity-50");
-        element.classList.add("opacity-80");
-      }
-    });
-  }
-  function ownedLastBlocksReset() {
-    lastBlockState.current?.map((block) => {
-      if (!userBlocks[(block.x - 1) * 100 + block.y]) {
+      });
+    },
+    ownedBlocks80() {
+      userBlocks[0]?.map((block) => {
         var element = document.getElementById(
-          "block " + block.y + ", " + block.x
+          "block " + block.position.y + ", " + block.position.x
         );
         if (element) {
           element.classList.remove("opacity-100");
-          element.classList.add("opacity-50");
+          element.classList.remove("opacity-50");
+          element.classList.add("opacity-80");
         }
-      }
-    });
-  }
+      });
+    },
+    ownedLastBlocksReset() {
+      lastBlockState.current?.map((block) => {
+        if (!userBlocks[(block.x - 1) * 100 + block.y]) {
+          var element = document.getElementById(
+            "block " + block.y + ", " + block.x
+          );
+          if (element) {
+            element.classList.remove("opacity-100");
+            element.classList.add("opacity-50");
+          }
+        }
+      });
+    },
+  };
 
   useEffect(() => {
     if (selectedBlocks[0].x !== 0 && selectedBlocks[0].y !== 0) {
       if (userBlocks[(selectedBlocks[0].x - 1) * 100 + selectedBlocks[0].y]) {
-        soldBlocks50();
-        ownedLastBlocksReset();
-        ownedBlocks80();
-        selectedBlocks100();
+        editBlocks.soldBlocks50();
+        editBlocks.ownedLastBlocksReset();
+        editBlocks.ownedBlocks80();
+        editBlocks.selectedBlocks100();
       } else {
-        soldBlocks80();
-        lastBlocks50();
-        selectedBlocks100();
+        editBlocks.soldBlocks80();
+        editBlocks.lastBlocks50();
+        editBlocks.selectedBlocks100();
       }
       lastBlockState.current = selectedBlocks;
     } else {
-      soldBlocksReset();
-      lastBlocksReset();
+      editBlocks.soldBlocksReset();
+      editBlocks.lastBlocksReset();
     }
   }, [selectedBlocks]);
 

@@ -6,7 +6,6 @@ import useLoadImage from "../hooks/useLoadImage";
 function BlockItem({ soldBlocks, setBlockInfo, i, j }) {
   const currentBlockId = j * 100 + i + 1;
   let imagePath = useLoadImage(soldBlocks[currentBlockId]?.image ?? null);
-
   return (
     <div
       id={"block " + (i + 1) + ", " + (j + 1)}
@@ -14,10 +13,15 @@ function BlockItem({ soldBlocks, setBlockInfo, i, j }) {
       className={`relative bg-white ${
         soldBlocks[currentBlockId] ? "opacity-80" : "opacity-50"
       } hover:opacity-100`}
-      style={{ height: 5, width: 5 }}
+      style={{
+        height: 5,
+        width: 5,
+        backgroundImage: imagePath ? `url(${imagePath})` : null,
+        backgroundSize: "cover",
+      }}
       onClick={() => setBlockInfo(j, i)}
     >
-      {imagePath && (
+      {/* {imagePath && (
         <Image
           src={imagePath}
           placeholder="blur"
@@ -27,7 +31,7 @@ function BlockItem({ soldBlocks, setBlockInfo, i, j }) {
           alt="Pixel picture"
           unoptimized
         />
-      )}
+      )} */}
     </div>
   );
 }
