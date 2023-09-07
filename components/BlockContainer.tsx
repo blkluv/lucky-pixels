@@ -12,6 +12,8 @@ import { getUserBlocks } from "../actions/getBlocks";
 import { useUser } from "../hooks/useUser";
 import BlockItem from "./BlockItem";
 
+import useLoadImage from "../hooks/useLoadImage";
+
 type EditBlocks = {
   soldBlocks80: () => void;
   lastBlocks50: () => void;
@@ -31,6 +33,9 @@ function PixelContainer({ children }) {
   const [userBlocks, setUserBlocks] = useState([]);
   const lastBlockState = useRef([]);
   const search = useSearchParams();
+
+  const testImage = useLoadImage(soldBlocks[303]?.image ?? null);
+  console.log(testImage);
 
   useEffect(() => {
     if (user) {
@@ -191,6 +196,7 @@ function PixelContainer({ children }) {
                               i={i}
                               j={j}
                               key={j}
+                              testImage={testImage}
                             />
                           );
                         })}

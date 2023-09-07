@@ -3,9 +3,11 @@ import React from "react";
 import Image from "next/image";
 import useLoadImage from "../hooks/useLoadImage";
 
-function BlockItem({ soldBlocks, setBlockInfo, i, j }) {
+function BlockItem({ soldBlocks, setBlockInfo, i, j, testImage }) {
   const currentBlockId = j * 100 + i + 1;
-  let imagePath = useLoadImage(soldBlocks[currentBlockId]?.image ?? null);
+  // const imagePath = useLoadImage(soldBlocks[currentBlockId]?.image ?? null);
+
+  const imagePath = testImage;
   return (
     <div
       id={"block " + (i + 1) + ", " + (j + 1)}
