@@ -18,22 +18,22 @@ function BlockItem({ soldBlocks, setBlockInfo, i, j, testImage }) {
       style={{
         height: 5,
         width: 5,
-        backgroundImage: imagePath ? `url(${imagePath})` : null,
-        backgroundSize: "cover",
+        // backgroundImage: imagePath ? `url(${imagePath})` : null,
+        // backgroundSize: "cover",
       }}
       onClick={() => setBlockInfo(j, i)}
     >
-      {/* {imagePath && (
+      {imagePath && (
         <Image
           src={imagePath}
-          placeholder="blur"
-          blurDataURL={encodeURIComponent(imagePath)}
+          // placeholder="blur"
+          // blurDataURL={encodeURIComponent(imagePath)}
           fill
           quality={20}
           alt="Pixel picture"
           unoptimized
         />
-      )} */}
+      )}
     </div>
   );
 }
