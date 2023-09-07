@@ -1,11 +1,11 @@
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
-const useLoadImage = (image) => {
-  if (image) {
+const useLoadImage = (imageUrl) => {
+  if (imageUrl) {
     const supabaseClient = useSupabaseClient();
     const { data: imageData } = supabaseClient.storage
       .from("images")
-      .getPublicUrl(image);
+      .getPublicUrl(imageUrl);
     return imageData.publicUrl;
   }
   return null;

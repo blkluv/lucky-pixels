@@ -12,6 +12,8 @@ import { BsFillEyeFill } from "react-icons/bs";
 import { useUser } from "../hooks/useUser";
 import ImagePreviewModal from "../components/ImagePreviewModal";
 
+import { resizeImg } from "./resizeImg";
+
 let handleImgType;
 function BlockInfoInput({ children }) {
   const [selectedBlocks, setSelectedBlocks, setSidebarState, userBlocks] =
@@ -143,10 +145,12 @@ function BlockInfoInput({ children }) {
         const updateId: number = (block.x - 1) * 100 + block.y;
 
         const blobImage = dataURItoBlob(slicedImages[index]);
+        const resizedImg = await resizeImg(blobImage);
+        const resizedBlobImg = dataURItoBlob(resizedImg);
 
         const { data: sliceData } = await supabaseClient.storage
           .from("images")
-          .upload(`block-image-${values.title}-${uuid}`, blobImage, {
+          .upload(`block-image-${values.title}-${uuid}`, resizedBlobImg, {
             cacheControl: "3600",
             upsert: false,
           });
@@ -173,10 +177,10 @@ function BlockInfoInput({ children }) {
   }
 
   function handleImg(type: any, imageFile: any) {
-    setLoading(true);
     handleImgType = type;
     const values = imageFile ?? getValues()?.image;
     if (values?.length > 0) {
+      setLoading(true);
       const uploadedImage = new Image();
       uploadedImage.src = URL.createObjectURL(values[0]);
       uploadedImage.onload = () => {

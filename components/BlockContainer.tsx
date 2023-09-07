@@ -34,8 +34,7 @@ function PixelContainer({ children }) {
   const lastBlockState = useRef([]);
   const search = useSearchParams();
 
-  const testImage = useLoadImage(soldBlocks[303]?.image ?? null);
-  console.log(testImage);
+  const testImage = useLoadImage(soldBlocks[1]?.image ?? null);
 
   useEffect(() => {
     if (user) {
