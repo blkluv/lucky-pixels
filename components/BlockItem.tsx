@@ -5,9 +5,9 @@ import useLoadImage from "../hooks/useLoadImage";
 
 function BlockItem({ soldBlocks, setBlockInfo, i, j, testImage }) {
   const currentBlockId = j * 100 + i + 1;
-  // const imagePath = useLoadImage(soldBlocks[currentBlockId]?.image ?? null);
+  const imagePath = useLoadImage(soldBlocks[currentBlockId]?.image ?? null);
 
-  const imagePath = testImage;
+  // const imagePath = testImage;
   return (
     <div
       id={"block " + (i + 1) + ", " + (j + 1)}
